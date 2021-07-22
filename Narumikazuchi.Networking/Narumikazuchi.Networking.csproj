@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Authors>Narumikazuchi</Authors>
+    <Description>
+      A small framework containing utilities for networking projects.
+
+      Contents:
+      - MacAddress class
+    </Description>
+    <Copyright>©2021 Narumikazuchi</Copyright>
+    <RepositoryUrl>https://github.com/Narumikazuchi/Toolbox</RepositoryUrl>
+    <PackageReleaseNotes>
+      Enables nullable context to better express the intend.
+      Fixed MacAddress byte parsing.
+      Small efficiency improvement.
+    </PackageReleaseNotes>
+    <Version>1.1.3</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>..\..\..\Managed Code Libraries\Custom\net5.0\Narumikazuchi.Networking.xml</DocumentationFile>
+    <OutputPath>..\..\..\Managed Code Libraries\Custom\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>..\Narumikazuchi.Networking.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

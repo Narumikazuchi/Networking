@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Narumikazuchi.Networking", "Narumikazuchi.Networking\Narumikazuchi.Networking.csproj", "{3897939C-BB47-4215-8B33-8F2EE8D929C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Narumikazuchi.Networking.Sockets", "Narumikazuchi.Networking.Sockets\Narumikazuchi.Networking.Sockets.csproj", "{B406B253-9659-4B28-8D34-DCCF02369177}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3897939C-BB47-4215-8B33-8F2EE8D929C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3897939C-BB47-4215-8B33-8F2EE8D929C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3897939C-BB47-4215-8B33-8F2EE8D929C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3897939C-BB47-4215-8B33-8F2EE8D929C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B406B253-9659-4B28-8D34-DCCF02369177}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B406B253-9659-4B28-8D34-DCCF02369177}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B406B253-9659-4B28-8D34-DCCF02369177}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B406B253-9659-4B28-8D34-DCCF02369177}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {91873886-CC62-4765-AE8C-54626A32D940}
+	EndGlobalSection
+EndGlobal
