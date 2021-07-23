@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Narumikazuchi.Serialization.Bytes;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
@@ -11,7 +12,7 @@ namespace Narumikazuchi.Networking.Sockets
     /// Contains the basic functionality for a <see cref="Socket"/>-based server.
     /// </summary>
     [DebuggerDisplay("{Protocol}:{Port}")]
-    public sealed class Server<T> where T : IByteConvertable<T>, IEquatable<T>
+    public sealed class Server<T> where T : class, IByteSerializable, IEquatable<T>
     {
         #region Constructor
 
@@ -159,7 +160,7 @@ namespace Narumikazuchi.Networking.Sockets
             {
                 if (this.Clients.Count > 0)
                 {
-                    Byte[] bytes = this.ShutdownCommand.ConvertToBytes();
+                    Byte[] bytes = this._serializer.Serialize(this.ShutdownCommand);
                     foreach (Socket client in this.Clients)
                     {
                         try
@@ -292,7 +293,7 @@ namespace Narumikazuchi.Networking.Sockets
                 throw new ArgumentNullException(nameof(client));
             }
 
-            Byte[] bytes = data.ConvertToBytes();
+            Byte[] bytes = this._serializer.Serialize(data);
             this.SendData(bytes, client, false);
         }
 
@@ -312,7 +313,7 @@ namespace Narumikazuchi.Networking.Sockets
                 this.Stop();
                 return;
             }
-            Byte[] bytes = data.ConvertToBytes();
+            Byte[] bytes = this._serializer.Serialize(data);
             try
             {
                 if (this.Clients.Count > 0)
@@ -363,7 +364,7 @@ namespace Narumikazuchi.Networking.Sockets
             {
                 return;
             }
-            T data = IByteConvertable<T>.ConvertFromBytes(bytes);
+            T data = this._serializer.Deserialize(bytes, 0);
             if (data.Equals(this.ShutdownCommand))
             {
                 if (client.Connected)
@@ -504,6 +505,8 @@ namespace Narumikazuchi.Networking.Sockets
 
         [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
         private readonly Socket _serverSocket;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly ByteSerializer<T> _serializer = new();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ServerDataProcessor<T>? _processor;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

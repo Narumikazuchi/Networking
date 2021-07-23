@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Narumikazuchi.Serialization.Bytes;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
@@ -11,7 +12,7 @@ namespace Narumikazuchi.Networking.Sockets
     /// Contains the basic functionality for a <see cref="Socket"/>-based client.
     /// </summary>
     [DebuggerDisplay("{Protocol}:{Port}")]
-    public sealed class Client<T> where T : IByteConvertable<T>, IEquatable<T>
+    public sealed class Client<T> where T : class, IByteSerializable, IEquatable<T>
     {
         #region Constructor
 
@@ -264,7 +265,7 @@ namespace Narumikazuchi.Networking.Sockets
                 {
                     throw new NotConnectedException(this._clientSocket);
                 }
-                Byte[] bytes = data.ConvertToBytes();
+                Byte[] bytes = this._serializer.Serialize(data);
                 this._clientSocket.BeginSend(bytes, 0, bytes.Length, SocketFlags.None, new AsyncCallback(this.SendCallback), data);
                 Thread.Sleep(10);
             }
@@ -280,7 +281,7 @@ namespace Narumikazuchi.Networking.Sockets
 
         private void ProcessData(Byte[] bytes)
         {
-            T data = IByteConvertable<T>.ConvertFromBytes(bytes);
+            T data = this._serializer.Deserialize(bytes, 0);
             // ============================================================================================
             // The server has shutdown
             // ============================================================================================
@@ -399,6 +400,8 @@ namespace Narumikazuchi.Networking.Sockets
 
         [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
         private readonly Socket _clientSocket;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly ByteSerializer<T> _serializer = new();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ClientDataProcessor<T>? _processor;
         [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]

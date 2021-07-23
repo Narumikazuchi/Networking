@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Narumikazuchi.Serialization.Bytes;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
@@ -7,7 +8,7 @@ namespace Narumikazuchi.Networking.Sockets
     /// <summary>
     /// Provides the blueprint for data processing of clients.
     /// </summary>
-    public abstract class ClientDataProcessor<T> where T : IByteConvertable<T>, IEquatable<T>
+    public abstract class ClientDataProcessor<T> where T : class, IByteSerializable, IEquatable<T>
     {
         #region Constructor
 

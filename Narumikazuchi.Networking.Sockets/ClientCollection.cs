@@ -1,4 +1,4 @@
-﻿using Narumikazuchi.Collections;
+﻿using Narumikazuchi.Collections.Abstract;
 using System;
 using System.Net.Sockets;
 
