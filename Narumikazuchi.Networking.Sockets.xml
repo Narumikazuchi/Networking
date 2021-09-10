@@ -1,0 +1,477 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Narumikazuchi.Networking.Sockets</name>
+    </assembly>
+    <members>
+        <member name="T:Narumikazuchi.Networking.Sockets.Client`1">
+            <summary>
+            Contains the basic functionality for a <see cref="T:System.Net.Sockets.Socket"/>-based client.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.#ctor(System.Net.Sockets.ProtocolType@,`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Client`1"/> with default values.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Client`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Client`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,System.Boolean@,`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Client`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,Narumikazuchi.Networking.Sockets.ClientDataProcessor{`0},`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Client`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,System.Boolean@,Narumikazuchi.Networking.Sockets.ClientDataProcessor{`0},`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Client`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.Connect(System.Net.IPAddress)">
+            <summary>
+            Tries to establish a connection to a server.<para/>
+            Use the public IP if you are connecting to a server outside you own LAN.
+            </summary>
+            <param name="address">The IP-Address the client should connect to.</param>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.Disconnect">
+            <summary>
+            Disconnects the client from the server.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.Disconnect(System.Boolean@)">
+            <summary>
+            Disconnects the client from the server.
+            </summary>
+            <param name="raiseEvent">Defines if the <see cref="E:Narumikazuchi.Networking.Sockets.Client`1.ConnectionClosed"/> event should be raised.</param>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Client`1.Send(`0@)">
+            <summary>
+            Sends the specified data to the connected server.
+            </summary>
+            <param name="data">The data to send over the connection.</param>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:Narumikazuchi.Networking.Sockets.NotConnectedException"/>
+        </member>
+        <member name="E:Narumikazuchi.Networking.Sockets.Client`1.ConnectionEstablished">
+            <summary>
+            Occurs when the connection was established.
+            </summary>
+        </member>
+        <member name="E:Narumikazuchi.Networking.Sockets.Client`1.ConnectionClosed">
+            <summary>
+            Occurs when the connection was closed.
+            </summary>
+        </member>
+        <member name="E:Narumikazuchi.Networking.Sockets.Client`1.ExceptionOccurred">
+            <summary>
+            Occurs when an exception occurs inside the server application.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Client`1.Protocol">
+            <summary>
+            The protocol used for the connection.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Client`1.Port">
+            <summary>
+            The port the client should connect to. Default is 80.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Client`1.AbortConnecting">
+            <summary>
+            Tells the Client to stop any connection attempt.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Client`1.Connected">
+            <summary>
+            Returns if the client is connected to a server.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Client`1.CommandProcessor">
+            <summary>
+            Determines the actions to be taken after the client receives a command from the server.<para/>
+            Is supposed to be a derived class from <see cref="T:Narumikazuchi.Networking.Sockets.ClientDataProcessor`1"/>.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Client`1.ForwardExceptions">
+            <summary>
+            Gets or sets if exceptions should be forwarded through the <see cref="E:Narumikazuchi.Networking.Sockets.Client`1.ExceptionOccurred"/> event.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Client`1.BufferSize">
+            <summary>
+            Gets or sets the size of the data buffer.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Client`1.ShutdownCommand">
+            <summary>
+            Gets the <typeparamref name="T"/> object, which signals a server shutdown or client disconnect.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.Sockets.ClientCollection">
+            <summary>
+            Contains the <see cref="T:System.Net.Sockets.Socket"/> instances for all to the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/> connected clients.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.Sockets.ClientDataProcessor`1">
+            <summary>
+            Provides the blueprint for data processing of clients.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.ClientDataProcessor`1.#ctor(Narumikazuchi.Networking.Sockets.Client{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.Sockets.ClientDataProcessor`1"/> class.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.ClientDataProcessor`1.ProcessReceivedData(`0@)">
+            <summary>
+            Processes the incoming data and takes action accordingly to the developers needs.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.ClientDataProcessor`1.Disconnect">
+            <summary>
+            Disconnects the client from the server.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.ClientDataProcessor`1.Client">
+            <summary>
+            Gets or sets the <see cref="T:Narumikazuchi.Networking.Sockets.Client`1"/> associated with this processor.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="T:Narumikazuchi.Networking.Sockets.ConnectionEventArgs">
+            <summary>
+            Contains the connected or disconnected client.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.ConnectionEventArgs.#ctor(System.Net.Sockets.Socket,Narumikazuchi.Networking.Sockets.ConnectionType@)">
+            <summary>
+            Contains the connected or disconnected client.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.ConnectionEventArgs.Client">
+            <summary>
+            Gets or sets the client <see cref="T:System.Net.Sockets.Socket"/> that connected/disconnected.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.ConnectionEventArgs.EventType">
+            <summary>
+            Gets or sets if the connection was established, closed or lost.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.Sockets.ConnectionType">
+            <summary>
+            Specifies the <see cref="T:Narumikazuchi.Networking.Sockets.ConnectionType"/> that occurred.
+            </summary>
+        </member>
+        <member name="F:Narumikazuchi.Networking.Sockets.ConnectionType.ConnectionEstablished">
+            <summary>
+            A connection was established.
+            </summary>
+        </member>
+        <member name="F:Narumikazuchi.Networking.Sockets.ConnectionType.ConnectionClosed">
+            <summary>
+            A connection was closed.
+            </summary>
+        </member>
+        <member name="F:Narumikazuchi.Networking.Sockets.ConnectionType.ConnectionLost">
+            <summary>
+            A connection was lost.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.Sockets.MaximumAttemptsExceededException">
+            <summary>
+            Represents errors which happen when connecting two endpoints.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.MaximumAttemptsExceededException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.Sockets.MaximumAttemptsExceededException"/> class.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.MaximumAttemptsExceededException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.Sockets.MaximumAttemptsExceededException"/> class.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.MaximumAttemptsExceededException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.Sockets.MaximumAttemptsExceededException"/> class.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.Sockets.NotConnectedException">
+            <summary>
+            Represents the error which occurs when two endpoints are not connected.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.NotConnectedException.#ctor(System.Net.Sockets.Socket)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.Sockets.NotConnectedException"/> class.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.NotConnectedException.#ctor(System.Net.Sockets.Socket,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.Sockets.NotConnectedException"/> class.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.NotConnectedException.#ctor(System.Net.Sockets.Socket,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.Sockets.NotConnectedException"/> class.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.NotConnectedException.Endpoint">
+            <summary>
+            The socket which caused the exception.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.Sockets.Server`1">
+            <summary>
+            Contains the basic functionality for a <see cref="T:System.Net.Sockets.Socket"/>-based server.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.#ctor(System.Net.Sockets.ProtocolType@,`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/> with default values.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,System.Boolean@,`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,Narumikazuchi.Networking.Sockets.ServerDataProcessor{`0},`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,System.Boolean@,Narumikazuchi.Networking.Sockets.ServerDataProcessor{`0},`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,System.Boolean@,System.Func{System.Boolean},`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,Narumikazuchi.Networking.Sockets.ServerDataProcessor{`0},System.Func{System.Boolean},`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.#ctor(System.Net.Sockets.ProtocolType@,System.Int32@,System.Int32@,System.Boolean@,Narumikazuchi.Networking.Sockets.ServerDataProcessor{`0},System.Func{System.Boolean},`0@)">
+            <summary>
+            Instantiates a new object of the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException"/>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+            <exception cref="T:System.Net.Sockets.SocketException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.Start">
+            <summary>
+            Starts setting up the server as well as starts to listen for incoming connections.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.Stop">
+            <summary>
+            Stops the running server.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.Send(`0@,System.Net.Sockets.Socket)">
+            <summary>
+            Sends the specified data to the specified client.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.Server`1.SendBroadcast(`0@)">
+            <summary>
+            Sends the specified data to all connected clients.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="E:Narumikazuchi.Networking.Sockets.Server`1.ClientConnected">
+            <summary>
+            Occurs when a new client is connected.
+            </summary>
+        </member>
+        <member name="E:Narumikazuchi.Networking.Sockets.Server`1.ClientDisconnected">
+            <summary>
+            Occurs when a client gets disconnected.
+            </summary>
+        </member>
+        <member name="E:Narumikazuchi.Networking.Sockets.Server`1.ExceptionOccurred">
+            <summary>
+            Occurs when an exception occurs inside the server application.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.Protocol">
+            <summary>
+            The protocol used for the connection.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.Port">
+            <summary>
+            The port the client should connect to. Default is 80.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.IsRunning">
+            <summary>
+            Returns if the server is currently running.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.Clients">
+            <summary>
+            List of Clients that are currently connected.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.CommandProcessor">
+            <summary>
+            Determines the actions to be taken after the server receives data from any client.<para/>
+            Is supposed to be a derived class from <see cref="T:Narumikazuchi.Networking.Sockets.ServerDataProcessor`1"/>.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.AcceptCondition">
+            <summary>
+            A function in which the conditions to accept new connections are defined.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.ForwardExceptions">
+            <summary>
+            Gets or sets if exceptions should be forwarded through the <see cref="E:Narumikazuchi.Networking.Sockets.Server`1.ExceptionOccurred"/> event.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.BufferSize">
+            <summary>
+            Gets or sets the size of the data buffer.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.BroadcastInterval">
+            <summary>
+            Gets or sets the interval between individual broadcast sends. Default is 10ms.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.Server`1.ShutdownCommand">
+            <summary>
+            Gets the <typeparamref name="T"/> object, which signals a server shutdown or client disconnect.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.Sockets.ServerDataProcessor`1">
+            <summary>
+            Provides the blueprint for data processing of servers.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.ServerDataProcessor`1.#ctor(Narumikazuchi.Networking.Sockets.Server{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.Sockets.ServerDataProcessor`1"/> class.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.ServerDataProcessor`1.ProcessReceivedData(`0@,System.Net.Sockets.Socket)">
+            <summary>
+            Processes the incoming data and takes action accordingly to the developers needs.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.Sockets.ServerDataProcessor`1.DisconnectClient(System.Net.Sockets.Socket)">
+            <summary>
+            Disconnects the client from the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/> instance.
+            </summary>
+            <param name="client">The client to disconnect.</param>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="P:Narumikazuchi.Networking.Sockets.ServerDataProcessor`1.Server">
+            <summary>
+            Gets or sets the <see cref="T:Narumikazuchi.Networking.Sockets.Server`1"/> associated with this processor.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+    </members>
+</doc>

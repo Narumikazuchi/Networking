@@ -8,54 +8,28 @@ namespace Narumikazuchi.Networking.Sockets
     /// <summary>
     /// Provides the blueprint for data processing of clients.
     /// </summary>
-    public abstract class ClientDataProcessor<T> where T : class, IByteSerializable, IEquatable<T>
+    public abstract partial class ClientDataProcessor<TMessage> 
+        where TMessage : class, IByteSerializable, IEquatable<TMessage>
     {
-        #region Constructor
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClientDataProcessor{T}"/> class.
-        /// </summary>
-        /// <exception cref="ArgumentNullException"/>
-        protected ClientDataProcessor([DisallowNull] Client<T> client)
-        {
-            if (client is null)
-            {
-                throw new ArgumentNullException(nameof(client));
-            }
-
-            this._client = client;
-        }
-
-        #endregion
-
-        #region Data Method Contract
-
         /// <summary>
         /// Processes the incoming data and takes action accordingly to the developers needs.
         /// </summary>
         /// <exception cref="ArgumentNullException"/>
-        public abstract void ProcessReceivedData([DisallowNull] in T data);
-
-        #endregion
-
-        #region Internal Stuff
+        public abstract void ProcessReceivedData([DisallowNull] TMessage data);
 
         /// <summary>
         /// Disconnects the client from the server.
         /// </summary>
-        public void Disconnect() => this.Client.Disconnect();
-
-        #endregion
-
-        #region Properties
+        public void Disconnect() => 
+            this.Client.Disconnect();
 
         /// <summary>
         /// Gets or sets the <see cref="Client{T}"/> associated with this processor.
         /// </summary>
         /// <exception cref="ArgumentNullException"/>
         [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
-        [DisallowNull]
-        public Client<T> Client
+        [NotNull]
+        public Client<TMessage> Client
         {
             get => this._client;
             set
@@ -67,14 +41,26 @@ namespace Narumikazuchi.Networking.Sockets
                 this._client = value;
             }
         }
+    }
 
-        #endregion
+    // Non-Public
+    partial class ClientDataProcessor<TMessage>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientDataProcessor{T}"/> class.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"/>
+        protected ClientDataProcessor([DisallowNull] Client<TMessage> client)
+        {
+            if (client is null)
+            {
+                throw new ArgumentNullException(nameof(client));
+            }
 
-        #region Fields
+            this._client = client;
+        }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Client<T> _client;
-
-        #endregion
+        private Client<TMessage> _client;
     }
 }

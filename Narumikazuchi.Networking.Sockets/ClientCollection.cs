@@ -9,13 +9,9 @@ namespace Narumikazuchi.Networking.Sockets
     /// </summary>
     public sealed class ClientCollection : ReadOnlyCollectionBase<Socket>
     {
-        #region Constructor
-
-        internal ClientCollection() : base() { }
-
-        #endregion
-
-        #region Collection Management
+        internal ClientCollection() : 
+            base() 
+        { }
 
         internal void Add(Socket item)
         {
@@ -77,7 +73,5 @@ namespace Narumikazuchi.Networking.Sockets
                 this._size = 0;
             }
         }
-
-        #endregion
     }
 }
