@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Narumikazuchi.Networking</name>
+    </assembly>
+    <members>
+        <member name="T:Narumikazuchi.Networking.MacAddress">
+            <summary>
+            Represents a standadized MAC-Address.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.#ctor(System.Byte[])">
+            <summary>
+            Initializes a new <see cref="T:Narumikazuchi.Networking.MacAddress"/> instance.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.ToBytes">
+            <summary>
+            Returns this object as an array of bytes.
+            </summary>
+            <returns>An array of bytes.</returns>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.Parse(System.String)">
+            <summary>
+            Parses the specified input string into a <see cref="T:Narumikazuchi.Networking.MacAddress"/> object.
+            </summary>
+            <param name="macAddress">The string to parse.</param>
+            <returns>A <see cref="T:Narumikazuchi.Networking.MacAddress"/> representing the input string.</returns>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.FormatException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.TryParse(System.String,System.Nullable{Narumikazuchi.Networking.MacAddress}@)">
+            <summary>
+            Parses the specified input string into a <see cref="T:Narumikazuchi.Networking.MacAddress"/> object.
+            </summary>
+            <param name="macAddress">The string to parse.</param>
+            <param name="address">A <see cref="T:Narumikazuchi.Networking.MacAddress"/> representing the input string.</param>
+            <returns><see langword="true"/> if the parsing succeeded; else <see langword="false"/></returns>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.Equals(Narumikazuchi.Networking.MacAddress)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.Equals(System.Byte[])">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+    </members>
+</doc>
