@@ -29,7 +29,7 @@ Content:
   <ItemGroup>
     <PackageReference Include="Narumikazuchi" Version="[1,2)" />
     <PackageReference Include="Narumikazuchi.Collections" Version="[5,6)" />
-    <PackageReference Include="Narumikazuchi.Serialization.Bytes" Version="[1,2)" />
+    <PackageReference Include="Narumikazuchi.Serialization.Bytes" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

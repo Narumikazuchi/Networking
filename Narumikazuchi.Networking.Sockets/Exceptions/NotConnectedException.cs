@@ -71,7 +71,9 @@ namespace Narumikazuchi.Networking.Sockets
     // Non-Public
     partial class NotConnectedException
     {
+#pragma warning disable
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private const String MESSAGE = "The endpoint is not connected.";
+#pragma warning restore
     }
 }

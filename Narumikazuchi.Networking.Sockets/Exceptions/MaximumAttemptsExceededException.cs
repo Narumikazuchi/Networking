@@ -38,7 +38,9 @@ namespace Narumikazuchi.Networking.Sockets
     // Non-Public
     partial class MaximumAttemptsExceededException
     {
+#pragma warning disable
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private const String MESSAGE = "Maximum number of attempts when connecting to endpoint exceeded.";
+#pragma warning restore
     }
 }
