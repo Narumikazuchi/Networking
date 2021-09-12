@@ -49,6 +49,19 @@ namespace Narumikazuchi.Networking
 
         /// <inheritdoc/>
         [Pure]
+        public override Int32 GetHashCode() =>
+            this._address.Sum(b => b.GetHashCode());
+
+        /// <inheritdoc/>
+        [Pure]
+        public override Boolean Equals([AllowNull] Object? obj) =>
+            (obj is MacAddress other &&
+            this.Equals(other)) ||
+            (obj is Byte[] address &&
+            this.Equals(address));
+
+        /// <inheritdoc/>
+        [Pure]
         [return: MaybeNull]
         public override String? ToString() => 
             String.Join(':', 
@@ -101,8 +114,16 @@ namespace Narumikazuchi.Networking
                 throw new ArgumentNullException(nameof(macAddress));
             }
 
-            String raw = macAddress.Replace(" ",
-                                            "");
+            String raw = String.Empty;
+
+            foreach (Char c in macAddress)
+            {
+                if (Char.IsWhiteSpace(c))
+                {
+                    continue;
+                }
+                raw += c;
+            }
 
             if (raw.IndexOf(':') > -1)
             {
@@ -171,17 +192,6 @@ namespace Narumikazuchi.Networking
     {
         /// <inheritdoc/>
         [Pure]
-        public override Int32 GetHashCode() => 
-            this._address.Sum(b => b.GetHashCode());
-
-        /// <inheritdoc/>
-        [Pure]
-        public override Boolean Equals([AllowNull] Object? obj) => 
-            obj is MacAddress other && 
-            this.Equals(other);
-
-        /// <inheritdoc/>
-        [Pure]
         public Boolean Equals(MacAddress other)
         {
             for (Int32 i = 0; i < ADDRESSLENGTH; i++)
@@ -206,6 +216,51 @@ namespace Narumikazuchi.Networking
             left is null
                 ? right is not null
                 : !left.Equals(right);
+#pragma warning restore
+    }
+
+    partial struct MacAddress : IEquatable<Byte[]>
+    {
+        /// <inheritdoc/>
+        /// <exception cref="ArgumentNullException"/>
+        [Pure]
+        public Boolean Equals(Byte[]? other)
+        {
+            if (other is null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+            if (other.Length != ADDRESSLENGTH)
+            {
+                throw new ArgumentOutOfRangeException(nameof(other),
+                                                      WRONG_LENGTH);
+            }
+
+            return this._address.SequenceEqual(other);
+        }
+
+#pragma warning disable
+        [Pure]
+        public static Boolean operator ==([AllowNull] MacAddress? left, [AllowNull] Byte[]? right) =>
+            left is null
+                ? right is null
+                : left.Equals(right);
+        [Pure]
+        public static Boolean operator ==([AllowNull] Byte[]? left, [AllowNull] MacAddress? right) =>
+            left is null
+                ? right is null
+                : right.Equals(left);
+
+        [Pure]
+        public static Boolean operator !=([AllowNull] MacAddress? left, [AllowNull] Byte[]? right) =>
+            left is null
+                ? right is not null
+                : !left.Equals(right);
+        [Pure]
+        public static Boolean operator !=([AllowNull] Byte[]? left, [AllowNull] MacAddress? right) =>
+            left is null
+                ? right is not null
+                : !right.Equals(left);
 #pragma warning restore
     }
 }
