@@ -4,13 +4,16 @@
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <Authors>Narumikazuchi</Authors>
-    <Description>For now this only contains the MacAddress struct, but for future projects more feature may be added.</Description>
+    <Description>For now this only contains the MacAddress struct, but for future projects more features may be added.</Description>
     <Copyright>©2021 Narumikazuchi</Copyright>
-    <RepositoryUrl>https://github.com/Narumikazuchi/Toolbox</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Narumikazuchi/Networking</RepositoryUrl>
     <PackageReleaseNotes></PackageReleaseNotes>
     <Version>1.2.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Narumikazuchi/Networking/wiki</PackageProjectUrl>
+    <PackageIcon>Narumikazuchi nuget.png</PackageIcon>
+    <PackageTags>Mac Address; Mac</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -25,6 +28,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\Narumikazuchi nuget.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

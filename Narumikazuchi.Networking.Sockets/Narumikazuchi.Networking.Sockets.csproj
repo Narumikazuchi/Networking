@@ -3,18 +3,18 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <RepositoryUrl>https://github.com/Narumikazuchi/CSharp-Utilities</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Narumikazuchi/Networking</RepositoryUrl>
     <Authors>Narumikazuchi</Authors>
     <Copyright>©2021 Narumikazuchi</Copyright>
-    <Description>A small framework containing a pre-written server-client socket model for immediate use.
-
-Content:
-- Client and Server classes
-- Client- and Server-Dataprocessor classes for custom message processing</Description>
+    <Description>Provides Client and Server classes for communication over socket connections.
+For more information visit https://github.com/Narumikazuchi/Networking/wiki.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>Updated to work with newer libraries.</PackageReleaseNotes>
     <Version>2.0.0</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Narumikazuchi/Networking/wiki</PackageProjectUrl>
+    <PackageIcon>Narumikazuchi nuget.png</PackageIcon>
+    <PackageTags>Client; Server; Sockets; Network Connections</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,6 +35,10 @@ Content:
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\Narumikazuchi nuget.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
