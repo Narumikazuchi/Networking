@@ -1,7 +1,7 @@
 ﻿namespace Narumikazuchi.Networking;
 
 /// <summary>
-/// Represents a standadized MAC-Address.
+/// Represents a standardized MAC-Address.
 /// </summary>
 [DebuggerDisplay("{ToString()}")]
 public readonly partial struct MacAddress
@@ -116,7 +116,78 @@ partial struct MacAddress
 #pragma warning restore
 }
 
-// IEquatable<T> - MacAddress
+// IComparable
+partial struct MacAddress : IComparable
+{
+    /// <inheritdoc/>
+    [Pure]
+    Int32 IComparable.CompareTo(Object? other) =>
+        other is MacAddress address
+            ? this.CompareTo(address)
+            : -1;
+}
+
+// IComparable<T>
+partial struct MacAddress : IComparable<MacAddress>
+{
+    /// <inheritdoc/>
+    [Pure]
+    public Int32 CompareTo(MacAddress other)
+    {
+        Int64 myValue = 0L;
+        Int64 otherValue = 0L;
+
+        for (Int32 i = 0; i < ADDRESSLENGTH; i++)
+        {
+            myValue += this._address[^i] << (i * 8);
+            otherValue += other._address[^i] << (i * 8);
+        }
+
+        return myValue.CompareTo(value: otherValue);
+    }
+}
+
+// IComparisonOperators<T, U>
+partial struct MacAddress : IComparisonOperators<MacAddress, MacAddress>
+{
+#pragma warning disable
+
+    [Pure]
+    public static Boolean operator >(MacAddress left, MacAddress right) =>
+        left.CompareTo(right) > 0;
+
+    [Pure]
+    public static Boolean operator >=(MacAddress left, MacAddress right) =>
+        left.CompareTo(right) >= 0;
+
+    [Pure]
+    public static Boolean operator <(MacAddress left, MacAddress right) =>
+        left.CompareTo(right) < 0;
+
+    [Pure]
+    public static Boolean operator <=(MacAddress left, MacAddress right) =>
+        left.CompareTo(right) <= 0;
+
+#pragma warning restore
+}
+
+// IEqualityOperators<T, U>
+partial struct MacAddress : IEqualityOperators<MacAddress, MacAddress>
+{
+#pragma warning disable
+
+    [Pure]
+    public static Boolean operator ==(MacAddress left, MacAddress right) =>
+        left.Equals(right);
+
+    [Pure]
+    public static Boolean operator !=(MacAddress left, MacAddress right) =>
+        !left.Equals(right);
+
+#pragma warning restore
+}
+
+// IEquatable<T>
 partial struct MacAddress : IEquatable<MacAddress>
 {
     /// <inheritdoc/>
@@ -132,72 +203,6 @@ partial struct MacAddress : IEquatable<MacAddress>
         }
         return true;
     }
-
-#pragma warning disable
-
-    [Pure]
-    public static Boolean operator ==([AllowNull] MacAddress? left, [AllowNull] MacAddress? right) =>
-        left is null
-            ? right is null
-            : left.Equals(right);
-
-    [Pure]
-    public static Boolean operator !=([AllowNull] MacAddress? left, [AllowNull] MacAddress? right) =>
-        left is null
-            ? right is not null
-            : !left.Equals(right);
-
-#pragma warning restore
-}
-
-// IEquatable<T> - Byte[]
-partial struct MacAddress : IEquatable<Byte[]>
-{
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    [Pure]
-    public Boolean Equals(Byte[]? other)
-    {
-        if (other is null)
-        {
-            throw new ArgumentNullException(nameof(other));
-        }
-        if (other.Length != ADDRESSLENGTH)
-        {
-            throw new ArgumentOutOfRangeException(nameof(other),
-                                                  WRONG_LENGTH);
-        }
-
-        return this._address.SequenceEqual(other);
-    }
-
-#pragma warning disable
-
-    [Pure]
-    public static Boolean operator ==([AllowNull] MacAddress? left, [AllowNull] Byte[]? right) =>
-        left is null
-            ? right is null
-            : left.Equals(right);
-
-    [Pure]
-    public static Boolean operator ==([AllowNull] Byte[]? left, [AllowNull] MacAddress? right) =>
-        left is null
-            ? right is null
-            : right.Equals(left);
-
-    [Pure]
-    public static Boolean operator !=([AllowNull] MacAddress? left, [AllowNull] Byte[]? right) =>
-        left is null
-            ? right is not null
-            : !left.Equals(right);
-
-    [Pure]
-    public static Boolean operator !=([AllowNull] Byte[]? left, [AllowNull] MacAddress? right) =>
-        left is null
-            ? right is not null
-            : !right.Equals(left);
-
-#pragma warning restore
 }
 
 // IParseable<T>
