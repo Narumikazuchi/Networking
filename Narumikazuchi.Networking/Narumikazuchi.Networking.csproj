@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <Authors>Narumikazuchi</Authors>
     <Description>For now this only contains the MacAddress struct, but for future projects more features may be added.</Description>
@@ -14,6 +14,7 @@
     <PackageProjectUrl>https://github.com/Narumikazuchi/Networking/wiki</PackageProjectUrl>
     <PackageIcon>Narumikazuchi nuget.png</PackageIcon>
     <PackageTags>Mac Address; Mac</PackageTags>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

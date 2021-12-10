@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <RepositoryUrl>https://github.com/Narumikazuchi/Networking</RepositoryUrl>
     <Authors>Narumikazuchi</Authors>
@@ -15,6 +15,7 @@ For more information visit https://github.com/Narumikazuchi/Networking/wiki.</De
     <PackageProjectUrl>https://github.com/Narumikazuchi/Networking/wiki</PackageProjectUrl>
     <PackageIcon>Narumikazuchi nuget.png</PackageIcon>
     <PackageTags>Client; Server; Sockets; Network Connections</PackageTags>
+	<LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

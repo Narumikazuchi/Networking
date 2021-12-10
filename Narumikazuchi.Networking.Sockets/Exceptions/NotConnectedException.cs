@@ -1,79 +1,77 @@
-﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Sockets;
+﻿namespace Narumikazuchi.Networking.Sockets;
 
-namespace Narumikazuchi.Networking.Sockets
+/// <summary>
+/// Represents the error which occurs when two endpoints are not connected.
+/// </summary>
+public sealed partial class NotConnectedException : Exception
 {
     /// <summary>
-    /// Represents the error which occurs when two endpoints are not connected.
+    /// Initializes a new instance of the <see cref="NotConnectedException"/> class.
     /// </summary>
-    public sealed partial class NotConnectedException : Exception
+    /// <exception cref="ArgumentNullException"/>
+    public NotConnectedException([DisallowNull] Socket socket) :
+        base(MESSAGE)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotConnectedException"/> class.
-        /// </summary>
-        /// <exception cref="ArgumentNullException"/>
-        public NotConnectedException([DisallowNull] Socket socket) : 
-            base(MESSAGE)
+        if (socket is null)
         {
-            if (socket is null)
-            {
-                throw new ArgumentNullException(nameof(socket));
-            }
-
-            this.Endpoint = socket;
-        }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotConnectedException"/> class.
-        /// </summary>
-        /// <exception cref="ArgumentNullException"/>
-        public NotConnectedException([DisallowNull] Socket socket, 
-                                     [AllowNull] String? auxMessage) : 
-            base(String.Format("{0} - {1}", 
-                               MESSAGE, 
-                               auxMessage))
-        {
-            if (socket is null)
-            {
-                throw new ArgumentNullException(nameof(socket));
-            }
-
-            this.Endpoint = socket;
-        }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotConnectedException"/> class.
-        /// </summary>
-        /// <exception cref="ArgumentNullException"/>
-        public NotConnectedException([DisallowNull] Socket socket,
-                                     [AllowNull] String? auxMessage,
-                                     [AllowNull] Exception? inner) : 
-            base(String.Format("{0} - {1}", 
-                               MESSAGE, 
-                               auxMessage), 
-                inner)
-        {
-            if (socket is null)
-            {
-                throw new ArgumentNullException(nameof(socket));
-            }
-
-            this.Endpoint = socket;
+            throw new ArgumentNullException(nameof(socket));
         }
 
-        /// <summary>
-        /// The socket which caused the exception.
-        /// </summary>
-        [NotNull]
-        public Socket Endpoint { get; }
+        this.Endpoint = socket;
     }
 
-    // Non-Public
-    partial class NotConnectedException
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotConnectedException"/> class.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"/>
+    public NotConnectedException([DisallowNull] Socket socket,
+                                 [AllowNull] String? auxMessage) :
+        base(String.Format("{0} - {1}",
+                           MESSAGE,
+                           auxMessage))
     {
+        if (socket is null)
+        {
+            throw new ArgumentNullException(nameof(socket));
+        }
+
+        this.Endpoint = socket;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotConnectedException"/> class.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"/>
+    public NotConnectedException([DisallowNull] Socket socket,
+                                 [AllowNull] String? auxMessage,
+                                 [AllowNull] Exception? inner) :
+        base(String.Format("{0} - {1}",
+                           MESSAGE,
+                           auxMessage),
+            inner)
+    {
+        if (socket is null)
+        {
+            throw new ArgumentNullException(nameof(socket));
+        }
+
+        this.Endpoint = socket;
+    }
+
+    /// <summary>
+    /// The socket which caused the exception.
+    /// </summary>
+    [NotNull]
+    public Socket Endpoint { get; }
+}
+
+// Non-Public
+partial class NotConnectedException
+{
 #pragma warning disable
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private const String MESSAGE = "The endpoint is not connected.";
+
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    private const String MESSAGE = "The endpoint is not connected.";
+
 #pragma warning restore
-    }
 }
