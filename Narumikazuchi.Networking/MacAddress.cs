@@ -23,6 +23,9 @@ public readonly partial struct MacAddress
                                                   WRONG_LENGTH);
         }
         this._address = address;
+        this._hashcode = this._address.Sum(b => b.GetHashCode());
+        this._stringValue = String.Join(separator: ':',
+                                        values: this._address.Select(b => b.ToString("X2")));
     }
 
     /// <summary>
@@ -43,7 +46,7 @@ public readonly partial struct MacAddress
     /// <inheritdoc/>
     [Pure]
     public override Int32 GetHashCode() =>
-        this._address.Sum(b => b.GetHashCode());
+        this._hashcode;
 
     /// <inheritdoc/>
     [Pure]
@@ -57,45 +60,7 @@ public readonly partial struct MacAddress
     [Pure]
     [return: MaybeNull]
     public override String? ToString() =>
-        String.Join(':',
-                    this._address);
-}
-
-// Static
-
-partial struct MacAddress
-{
-    /// <summary>
-    /// Parses the specified input string into a <see cref="MacAddress"/> object.
-    /// </summary>
-    /// <param name="macAddress">The string to parse.</param>
-    /// <returns>A <see cref="MacAddress"/> representing the input string.</returns>
-    /// <exception cref="ArgumentNullException"/>
-    /// <exception cref="FormatException"/>
-    public static MacAddress Parse([DisallowNull] String macAddress) =>
-        ParseInternal(macAddress);
-
-    /// <summary>
-    /// Parses the specified input string into a <see cref="MacAddress"/> object.
-    /// </summary>
-    /// <param name="macAddress">The string to parse.</param>
-    /// <param name="address">A <see cref="MacAddress"/> representing the input string.</param>
-    /// <returns><see langword="true"/> if the parsing succeeded; else <see langword="false"/></returns>
-    /// <exception cref="ArgumentNullException"/>
-    public static Boolean TryParse([DisallowNull] String macAddress,
-                                   [NotNullWhen(true)] out MacAddress? address)
-    {
-        try
-        {
-            address = ParseInternal(macAddress);
-            return address is not null;
-        }
-        catch
-        {
-            address = null;
-            return false;
-        }
-    }
+        this._stringValue;
 }
 
 // Non-Public
@@ -108,83 +73,50 @@ partial struct MacAddress
             throw new ArgumentNullException(nameof(macAddress));
         }
 
-        String raw = String.Empty;
+        // Matches the first group (any digit or letter a-f * 2) exactly 5 times and then another time, but here without the optional seperators (-, :)
+        Regex regex = new(@"(?:\s*[\dA-Fa-f][\dA-Fa-f]\s*[:-]?){5}\s*[\dA-Fa-f][\dA-Fa-f]\s*");
 
-        foreach (Char c in macAddress)
+        if (!regex.IsMatch(input: macAddress))
         {
-            if (Char.IsWhiteSpace(c))
-            {
-                continue;
-            }
-            raw += c;
+            throw new FormatException(INCORRECT_FORMAT);
         }
 
-        if (raw.IndexOf(':') > -1)
+        Match match = regex.Match(input: macAddress);
+        String raw = match.Value.Replace(oldValue: "-", newValue: "")
+                                .Replace(oldValue: ":", newValue: "");
+
+        Byte[] bytes = new Byte[ADDRESSLENGTH];
+        for (Int32 i = 0; i < ADDRESSLENGTH; i++)
         {
-            String[] segments = raw.Split(':');
-            if (segments.Length != ADDRESSLENGTH)
-            {
-                throw new FormatException(WRONG_LENGTH);
-            }
-
-            Byte[] bytes = new Byte[ADDRESSLENGTH];
-            for (Int32 i = 0; i < ADDRESSLENGTH; i++)
-            {
-                if (!Byte.TryParse(segments[i],
-                                   NumberStyles.HexNumber,
-                                   null,
-                                   out Byte b))
-                {
-                    throw new FormatException(INCORRECT_FORMAT);
-                }
-                bytes[i] = b;
-            }
-
-            return new(bytes);
+            String segment = raw.Substring(startIndex: i * 2, 
+                                           length: 2);
+            bytes[i] = Byte.Parse(s: segment, 
+                                  style: NumberStyles.HexNumber,
+                                  provider: null);
         }
-        else
-        {
-            if (raw.Length != ADDRESSLENGTH * 2)
-            {
-                throw new FormatException();
-            }
-
-            Byte[] bytes = new Byte[ADDRESSLENGTH];
-            for (Int32 i = 0; i < ADDRESSLENGTH; i++)
-            {
-                String sub = raw.Substring(i * 2,
-                                           2);
-                if (!Byte.TryParse(sub,
-                                   NumberStyles.HexNumber,
-                                   null,
-                                   out Byte b))
-                {
-                    throw new FormatException(INCORRECT_FORMAT);
-                }
-                bytes[i] = b;
-            }
-
-            return new(bytes);
-        }
+        return new(bytes);
     }
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private readonly Byte[] _address;
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    private readonly Int32 _hashcode;
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    private readonly String _stringValue;
 
 #pragma warning disable
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private const Int32 ADDRESSLENGTH = 6;
-
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private const String WRONG_LENGTH = "The address does not have the correct length for a MAC address.";
-
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private const String INCORRECT_FORMAT = "The address does not have the correct format for a MAC address.";
 
 #pragma warning restore
 }
 
+// IEquatable<T> - MacAddress
 partial struct MacAddress : IEquatable<MacAddress>
 {
     /// <inheritdoc/>
@@ -218,6 +150,7 @@ partial struct MacAddress : IEquatable<MacAddress>
 #pragma warning restore
 }
 
+// IEquatable<T> - Byte[]
 partial struct MacAddress : IEquatable<Byte[]>
 {
     /// <inheritdoc/>
@@ -265,4 +198,44 @@ partial struct MacAddress : IEquatable<Byte[]>
             : !right.Equals(left);
 
 #pragma warning restore
+}
+
+// IParseable<T>
+partial struct MacAddress : IParseable<MacAddress>
+{
+    /// <summary>
+    /// Parses the specified input string into a <see cref="MacAddress"/> object.
+    /// </summary>
+    /// <param name="macAddress">The string to parse.</param>
+    /// <param name="provider">An object that supplies culture-specific information about the format of <paramref name="macAddress"/>. If it's <see langword="null"/> then the current threads culture will be used.</param>
+    /// <returns>A <see cref="MacAddress"/> representing the input string.</returns>
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="FormatException"/>
+    public static MacAddress Parse([DisallowNull] String macAddress,
+                                   [AllowNull] IFormatProvider? provider) =>
+        ParseInternal(macAddress);
+
+    /// <summary>
+    /// Parses the specified input string into a <see cref="MacAddress"/> object.
+    /// </summary>
+    /// <param name="macAddress">The string to parse.</param>
+    /// <param name="provider">An object that supplies culture-specific information about the format of <paramref name="macAddress"/>. If it's <see langword="null"/> then the current threads culture will be used.</param>
+    /// <param name="address">A <see cref="MacAddress"/> representing the input string.</param>
+    /// <returns><see langword="true"/> if the parsing succeeded; else <see langword="false"/></returns>
+    /// <exception cref="ArgumentNullException"/>
+    public static Boolean TryParse([NotNullWhen(true)] String? macAddress,
+                                   [AllowNull] IFormatProvider? provider,
+                                   out MacAddress address)
+    {
+        try
+        {
+            address = ParseInternal(macAddress);
+            return !address.Equals(default(MacAddress));
+        }
+        catch
+        {
+            address = default;
+            return false;
+        }
+    }
 }
