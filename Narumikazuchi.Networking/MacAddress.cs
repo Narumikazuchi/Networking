@@ -26,6 +26,13 @@ public readonly partial struct MacAddress
         this._hashcode = this._address.Sum(b => b.GetHashCode());
         this._stringValue = String.Join(separator: ':',
                                         values: this._address.Select(b => b.ToString("X2")));
+
+        Int64 myValue = 0L;
+        for (Int32 i = 0; i < ADDRESSLENGTH; i++)
+        {
+            myValue += (Int64)this._address[^(i + 1)] << (i * 8);
+        }
+        this._integerValue = myValue;
     }
 
     /// <summary>
@@ -82,7 +89,8 @@ partial struct MacAddress
         }
 
         Match match = regex.Match(input: macAddress);
-        String raw = match.Value.Replace(oldValue: "-", newValue: "")
+        String raw = match.Value.Replace(oldValue: " ", newValue: "")
+                                .Replace(oldValue: "-", newValue: "")
                                 .Replace(oldValue: ":", newValue: "");
 
         Byte[] bytes = new Byte[ADDRESSLENGTH];
@@ -103,6 +111,8 @@ partial struct MacAddress
     private readonly Int32 _hashcode;
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private readonly String _stringValue;
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    private readonly Int64 _integerValue;
 
 #pragma warning disable
 
@@ -132,19 +142,8 @@ partial struct MacAddress : IComparable<MacAddress>
 {
     /// <inheritdoc/>
     [Pure]
-    public Int32 CompareTo(MacAddress other)
-    {
-        Int64 myValue = 0L;
-        Int64 otherValue = 0L;
-
-        for (Int32 i = 0; i < ADDRESSLENGTH; i++)
-        {
-            myValue += this._address[^i] << (i * 8);
-            otherValue += other._address[^i] << (i * 8);
-        }
-
-        return myValue.CompareTo(value: otherValue);
-    }
+    public Int32 CompareTo(MacAddress other) =>
+        this._integerValue.CompareTo(value: other._integerValue);
 }
 
 // IComparisonOperators<T, U>
