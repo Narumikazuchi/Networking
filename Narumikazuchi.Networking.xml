@@ -6,7 +6,7 @@
     <members>
         <member name="T:Narumikazuchi.Networking.MacAddress">
             <summary>
-            Represents a standadized MAC-Address.
+            Represents a standardized MAC-Address.
             </summary>
         </member>
         <member name="M:Narumikazuchi.Networking.MacAddress.#ctor(System.Byte[])">
@@ -31,29 +31,33 @@
         <member name="M:Narumikazuchi.Networking.MacAddress.ToString">
             <inheritdoc/>
         </member>
-        <member name="M:Narumikazuchi.Networking.MacAddress.Parse(System.String)">
-            <summary>
-            Parses the specified input string into a <see cref="T:Narumikazuchi.Networking.MacAddress"/> object.
-            </summary>
-            <param name="macAddress">The string to parse.</param>
-            <returns>A <see cref="T:Narumikazuchi.Networking.MacAddress"/> representing the input string.</returns>
-            <exception cref="T:System.ArgumentNullException"/>
-            <exception cref="T:System.FormatException"/>
+        <member name="M:Narumikazuchi.Networking.MacAddress.System#IComparable#CompareTo(System.Object)">
+            <inheritdoc/>
         </member>
-        <member name="M:Narumikazuchi.Networking.MacAddress.TryParse(System.String,System.Nullable{Narumikazuchi.Networking.MacAddress}@)">
-            <summary>
-            Parses the specified input string into a <see cref="T:Narumikazuchi.Networking.MacAddress"/> object.
-            </summary>
-            <param name="macAddress">The string to parse.</param>
-            <param name="address">A <see cref="T:Narumikazuchi.Networking.MacAddress"/> representing the input string.</param>
-            <returns><see langword="true"/> if the parsing succeeded; else <see langword="false"/></returns>
-            <exception cref="T:System.ArgumentNullException"/>
+        <member name="M:Narumikazuchi.Networking.MacAddress.CompareTo(Narumikazuchi.Networking.MacAddress)">
+            <inheritdoc/>
         </member>
         <member name="M:Narumikazuchi.Networking.MacAddress.Equals(Narumikazuchi.Networking.MacAddress)">
             <inheritdoc/>
         </member>
-        <member name="M:Narumikazuchi.Networking.MacAddress.Equals(System.Byte[])">
-            <inheritdoc/>
+        <member name="M:Narumikazuchi.Networking.MacAddress.Parse(System.String,System.IFormatProvider)">
+            <summary>
+            Parses the specified input string into a <see cref="T:Narumikazuchi.Networking.MacAddress"/> object.
+            </summary>
+            <param name="macAddress">The string to parse.</param>
+            <param name="provider">An object that supplies culture-specific information about the format of <paramref name="macAddress"/>. If it's <see langword="null"/> then the current threads culture will be used.</param>
+            <returns>A <see cref="T:Narumikazuchi.Networking.MacAddress"/> representing the input string.</returns>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.FormatException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.TryParse(System.String,System.IFormatProvider,Narumikazuchi.Networking.MacAddress@)">
+            <summary>
+            Parses the specified input string into a <see cref="T:Narumikazuchi.Networking.MacAddress"/> object.
+            </summary>
+            <param name="macAddress">The string to parse.</param>
+            <param name="provider">An object that supplies culture-specific information about the format of <paramref name="macAddress"/>. If it's <see langword="null"/> then the current threads culture will be used.</param>
+            <param name="address">A <see cref="T:Narumikazuchi.Networking.MacAddress"/> representing the input string.</param>
+            <returns><see langword="true"/> if the parsing succeeded; else <see langword="false"/></returns>
             <exception cref="T:System.ArgumentNullException"/>
         </member>
     </members>
