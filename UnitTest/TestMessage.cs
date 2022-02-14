@@ -1,33 +1,29 @@
 ﻿namespace UnitTest;
 
-public class TestMessage : IByteSerializable, IEquatable<TestMessage>
+public class TestMessage : IDeserializable<TestMessage>, ISerializable
 {
     public TestMessage()
     { }
 
-    public TestMessage(String msg) => this.Message = msg;
-
-    public String Message { get; set; }
-
-    UInt32 IByteSerializable.InitializeUninitializedState(Byte[] bytes) => throw new NotImplementedException();
-
-    UInt32 IByteSerializable.SetState(Byte[] bytes)
+    public TestMessage(String msg)
     {
-        Int32 size = BitConverter.ToInt32(bytes);
-        String message = Encoding.UTF8.GetString(bytes, 4, size);
-        this.Message = message;
-        return (UInt32)(size + 4);
+        this.Message = msg;
     }
 
-    Byte[] ISerializable.ToBytes()
+    public String Message 
+    { 
+        get; 
+        set; 
+    } = String.Empty;
+
+    [return: NotNull]
+    public static TestMessage ConstructFromSerializationData([DisallowNull] ISerializationInfoGetter info)
     {
-        Byte[] data = Encoding.UTF8.GetBytes(this.Message);
-        Byte[] size = BitConverter.GetBytes(data.Length);
-        return size.Concat(data)
-                   .ToArray();
+        String msg = info.GetState<String>(nameof(Message))!;
+        return new(msg: msg);
     }
 
-    public override Boolean Equals(Object obj) => obj is TestMessage other && this.Equals(other);
-
-    public Boolean Equals(TestMessage other) => other is null ? false : this.Message.Equals(other.Message);
+    public void GetSerializationData([DisallowNull] ISerializationInfoAdder info) =>
+        info.AddState(nameof(this.Message),
+                      this.Message);
 }

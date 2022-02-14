@@ -5,7 +5,7 @@
 /// </summary>
 // Non-Public
 public abstract partial class ServerDataProcessor<TMessage>
-    where TMessage : class, IByteSerializable, IEquatable<TMessage>
+    where TMessage : IDeserializable<TMessage>, ISerializable
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ServerDataProcessor{TMessage}"/> class.
@@ -13,15 +13,14 @@ public abstract partial class ServerDataProcessor<TMessage>
     /// <exception cref="ArgumentNullException"/>
     protected ServerDataProcessor([DisallowNull] Server<TMessage> server)
     {
-        if (server is null)
-        {
-            throw new ArgumentNullException(nameof(server));
-        }
+        ExceptionHelpers.ThrowIfArgumentNull(server);
 
         this._server = server;
-        if (this._server.DataProcessor != this)
+        if (this._server
+                .DataProcessor != this)
         {
-            this._server.DataProcessor = this;
+            this._server
+                .DataProcessor = this;
         }
     }
 
@@ -43,7 +42,8 @@ partial class ServerDataProcessor<TMessage> : IServerDataProcessor<TMessage>
     /// <param name="client">The client to disconnect.</param>
     /// <exception cref="KeyNotFoundException"/>
     public void DisconnectClient(in Guid client) =>
-        this.Server.Disconnect(client);
+        this.Server
+            .Disconnect(client);
 
     /// <summary>
     /// Gets or sets the <see cref="Server{TMessage}"/> associated with this processor.
@@ -55,14 +55,14 @@ partial class ServerDataProcessor<TMessage> : IServerDataProcessor<TMessage>
         get => this._server;
         set
         {
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+            ExceptionHelpers.ThrowIfArgumentNull(value);
+
             this._server = value;
-            if (this._server.DataProcessor != this)
+            if (this._server
+                    .DataProcessor != this)
             {
-                this._server.DataProcessor = this;
+                this._server
+                    .DataProcessor = this;
             }
         }
     }

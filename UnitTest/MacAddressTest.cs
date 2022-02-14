@@ -66,7 +66,7 @@ public class MacAddressTest
         String raw = "FFEZ0864CE0A";
         Boolean result = MacAddress.TryParse(raw, null, out MacAddress mac);
         Assert.IsFalse(result);
-        Assert.IsNull(mac);
+        Assert.AreEqual(mac, default(MacAddress));
     }
 
     [TestMethod]

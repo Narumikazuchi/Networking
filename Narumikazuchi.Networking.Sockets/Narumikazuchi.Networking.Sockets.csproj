@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnablePreviewFeatures>True</EnablePreviewFeatures>
     <RepositoryUrl>https://github.com/Narumikazuchi/Networking</RepositoryUrl>
     <Authors>Narumikazuchi</Authors>
     <Copyright>©2021 Narumikazuchi</Copyright>
@@ -15,24 +18,21 @@ For more information visit https://github.com/Narumikazuchi/Networking/wiki.</De
     <PackageProjectUrl>https://github.com/Narumikazuchi/Networking/wiki</PackageProjectUrl>
     <PackageIcon>Narumikazuchi nuget.png</PackageIcon>
     <PackageTags>Client; Server; Sockets; Network Connections</PackageTags>
-	<LangVersion>preview</LangVersion>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>..\Narumikazuchi.Networking.Sockets.xml</DocumentationFile>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>..\..\..\Managed Code Libraries\Custom\net5.0\Narumikazuchi.Networking.Sockets.xml</DocumentationFile>
     <OutputPath>..\..\..\Managed Code Libraries\Custom\</OutputPath>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Narumikazuchi" Version="[1,2)" />
     <PackageReference Include="Narumikazuchi.Collections" Version="[5,6)" />
-    <PackageReference Include="Narumikazuchi.Serialization.Bytes" Version="1.0.0" />
+    <PackageReference Include="Narumikazuchi.Serialization.Bytes" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,6 +44,10 @@ For more information visit https://github.com/Narumikazuchi/Networking/wiki.</De
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Narumikazuchi.Networking\Narumikazuchi.Networking.csproj" />
   </ItemGroup>
 
 </Project>

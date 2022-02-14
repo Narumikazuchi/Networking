@@ -1,9 +1,9 @@
-﻿namespace Narumikazuchi.Networking.Sockets;
+﻿namespace Narumikazuchi.Networking;
 
 /// <summary>
 /// Contains the connected or disconnected client.
 /// </summary>
-public sealed partial class ConnectionEventArgs : EventArgs
+public sealed partial class ConnectionEventArgs
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ConnectionEventArgs"/> class.
@@ -17,7 +17,7 @@ public sealed partial class ConnectionEventArgs : EventArgs
     }
 
     /// <summary>
-    /// Gets or sets the client <see cref="Socket"/> that connected/disconnected.
+    /// Gets or sets the client <see cref="System.Net.Sockets.Socket"/> that connected/disconnected.
     /// </summary>
     public Guid Client
     {
@@ -32,7 +32,7 @@ public sealed partial class ConnectionEventArgs : EventArgs
 }
 
 // Non-Public
-partial class ConnectionEventArgs
+partial class ConnectionEventArgs : EventArgs
 {
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private Guid _client;

@@ -9,6 +9,17 @@ public readonly partial struct MacAddress
     /// <summary>
     /// Initializes a new <see cref="MacAddress"/> instance.
     /// </summary>
+    public MacAddress()
+    {
+        this._address = new Byte[ADDRESSLENGTH];
+        this._hashcode = 0;
+        this._integerValue = 0;
+        this._stringValue = "00:00:00:00:00:00";
+    }
+
+    /// <summary>
+    /// Initializes a new <see cref="MacAddress"/> instance.
+    /// </summary>
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="ArgumentOutOfRangeException"/>
     public MacAddress([DisallowNull] Byte[] address)
@@ -58,10 +69,10 @@ public readonly partial struct MacAddress
     /// <inheritdoc/>
     [Pure]
     public override Boolean Equals([AllowNull] Object? obj) =>
-        (obj is MacAddress other &&
-        this.Equals(other)) ||
-        (obj is Byte[] address &&
-        this.Equals(address));
+        obj is MacAddress other &&
+        this.Equals(other) ||
+        obj is Byte[] address &&
+        this.Equals(address);
 
     /// <inheritdoc/>
     [Pure]
@@ -89,9 +100,10 @@ partial struct MacAddress
         }
 
         Match match = regex.Match(input: macAddress);
-        String raw = match.Value.Replace(oldValue: " ", newValue: "")
-                                .Replace(oldValue: "-", newValue: "")
-                                .Replace(oldValue: ":", newValue: "");
+        String raw = match.Value
+                          .Replace(oldValue: " ", newValue: "")
+                          .Replace(oldValue: "-", newValue: "")
+                          .Replace(oldValue: ":", newValue: "");
 
         Byte[] bytes = new Byte[ADDRESSLENGTH];
         for (Int32 i = 0; i < ADDRESSLENGTH; i++)
@@ -193,9 +205,24 @@ partial struct MacAddress : IEquatable<MacAddress>
     [Pure]
     public Boolean Equals(MacAddress other)
     {
-        for (Int32 i = 0; i < ADDRESSLENGTH; i++)
+        if (this._address is null &&
+            other._address is null)
         {
-            if (this._address[i] != other._address[i])
+            return true;
+        }
+        if (this._address is not null &&
+            other._address is null ||
+            this._address is null &&
+            other._address is not null)
+        {
+            return false;
+        }
+        for (Int32 i = 0;
+             i < this._address!
+                     .Length; 
+             i++)
+        {
+            if (this._address[i] != other._address![i])
             {
                 return false;
             }
@@ -234,7 +261,7 @@ partial struct MacAddress : IParseable<MacAddress>
         try
         {
             address = ParseInternal(macAddress);
-            return !address.Equals(default(MacAddress));
+            return !address.Equals(default);
         }
         catch
         {

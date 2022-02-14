@@ -1,4 +1,4 @@
-﻿namespace Narumikazuchi.Networking.Sockets;
+﻿namespace Narumikazuchi.Networking;
 
 /// <summary>
 /// Represents an object which process any <typeparamref name="TData"/> that the associated <see cref="IClient{TData}"/> receives.
@@ -9,7 +9,7 @@ public interface IClientDataProcessor<TData>
     /// Process the specified <typeparamref name="TData"/> which this method recevied from it's associated <see cref="IClient{TData}"/>.
     /// </summary>
     /// <param name="data">The data received by the associated <see cref="IClient{TData}"/>.</param>
-    public void ProcessReceivedData([System.Diagnostics.CodeAnalysis.DisallowNull] TData data);
+    public void ProcessReceivedData([DisallowNull] TData data);
 
     /// <summary>
     /// Disconnects the associated <see cref="IClient{TData}"/> from the <see cref="IServer{TData}"/> it is connected to.
@@ -19,6 +19,6 @@ public interface IClientDataProcessor<TData>
     /// <summary>
     /// Gets or sets the associated <see cref="IClient{TData}"/>.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.NotNull]
+    [NotNull]
     public IClient<TData> Client { get; set; }
 }

@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Narumikazuchi.Networking.Sockets\Narumikazuchi.Networking.Sockets.csproj" />
-    <ProjectReference Include="..\Narumikazuchi.Networking\Narumikazuchi.Networking.csproj" />
   </ItemGroup>
 
 </Project>

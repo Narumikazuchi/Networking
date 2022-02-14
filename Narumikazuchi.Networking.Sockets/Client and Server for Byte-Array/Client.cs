@@ -22,9 +22,9 @@ public sealed partial class Client
         {
             throw new ArgumentOutOfRangeException(nameof(bufferSize));
         }
-        return new(port,
-                   bufferSize,
-                   null);
+        return new(port: port,
+                   bufferSize: bufferSize,
+                   processor: null);
     }
 
     /// <summary>
@@ -39,10 +39,7 @@ public sealed partial class Client
                                       in Int32 bufferSize,
                                       [DisallowNull] ClientDataProcessor processor)
     {
-        if (processor is null)
-        {
-            throw new ArgumentNullException(nameof(processor));
-        }
+        ExceptionHelpers.ThrowIfArgumentNull(processor);
         if (port < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(port));
@@ -51,9 +48,9 @@ public sealed partial class Client
         {
             throw new ArgumentOutOfRangeException(nameof(bufferSize));
         }
-        return new(port,
-                   bufferSize,
-                   processor);
+        return new(port: port,
+                   bufferSize: bufferSize,
+                   processor: processor);
     }
 
     /// <summary>
@@ -70,30 +67,34 @@ partial class Client
     private Client(in Int32 port,
                    in Int32 bufferSize,
                    [AllowNull] IClientDataProcessor<Byte[]>? processor) :
-        base(port,
-             bufferSize,
-             processor)
+        base(port: port,
+             bufferSize: bufferSize,
+             processor: processor)
     { }
 
     private void LoopConnect(IPAddress address)
     {
-        while (!this.Socket.Connected &&
+        while (!this.Socket
+                    .Connected &&
                 this._currentAttempts < MAXATTEMPTS)
         {
             try
             {
                 this._currentAttempts++;
-                this.Socket.Connect(address,
-                                    this.Port);
+                this.Socket
+                    .Connect(address: address,
+                             port: this.Port);
             }
             catch (SocketException) { }
         }
         if (this._currentAttempts == MAXATTEMPTS &&
-            !this.Socket.Connected)
+            !this.Socket
+                 .Connected)
         {
             throw new MaximumAttemptsExceededException();
         }
-        if (this.Socket.Connected)
+        if (this.Socket
+                .Connected)
         {
             this.InitiateConnection();
         }
@@ -102,11 +103,9 @@ partial class Client
     [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
     private Int32 _currentAttempts = 0;
 
-#pragma warning disable
-
+#pragma warning disable IDE1006
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private const Int32 MAXATTEMPTS = 20;
-
 #pragma warning restore
 }
 
@@ -118,11 +117,14 @@ partial class Client : ClientBase<Byte[]>
     /// <exception cref="ObjectDisposedException"/>
     public override void Connect([DisallowNull] IPAddress address)
     {
-        if (address is null)
+        ExceptionHelpers.ThrowIfArgumentNull(address);
+
+        if (this.IsConnected)
         {
-            throw new ArgumentNullException(nameof(address));
+            return;
         }
 
+        this.InitiateSocket();
         this._currentAttempts = 0;
         this.LoopConnect(address);
     }
@@ -137,31 +139,30 @@ partial class Client : ClientBase<Byte[]>
     /// <exception cref="ObjectDisposedException"/>
     public override void Send([DisallowNull] Byte[] data)
     {
-        if (data is null)
+        ExceptionHelpers.ThrowIfArgumentNull(data);
+        if (!this.IsConnected)
         {
-            throw new ArgumentNullException(nameof(data));
+            throw new NotConnectedException(socket: this.Socket);
         }
 
-        if (!this.Connected)
-        {
-            throw new NotConnectedException(this.Socket);
-        }
         this.InitiateSend(data);
     }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
     [return: NotNull]
-    protected override Byte[] SerializeToBytes([DisallowNull] Byte[] data) =>
-        data is null
-            ? throw new ArgumentNullException(nameof(data))
-            : data;
+    protected override Byte[] SerializeToBytes([DisallowNull] Byte[] data)
+    {
+        ExceptionHelpers.ThrowIfArgumentNull(data);
+        return data;
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
     [return: NotNull]
-    protected override Byte[] SerializeFromBytes([DisallowNull] Byte[] bytes) =>
-        bytes is null
-            ? throw new ArgumentNullException(nameof(bytes))
-            : bytes;
+    protected override Byte[] SerializeFromBytes([DisallowNull] Byte[] bytes)
+    {
+        ExceptionHelpers.ThrowIfArgumentNull(bytes);
+        return bytes;
+    }
 }

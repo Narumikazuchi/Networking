@@ -11,11 +11,20 @@ public abstract partial class ClientBase<TData>
     /// Gets whether the <see cref="IClient{TData}"/> is connected to an <see cref="IServer{TData}"/> at the moment.
     /// </summary>
     /// <exception cref="ObjectDisposedException"/>
-    public Boolean Connected =>
-        this._disposed
-            ? throw new ObjectDisposedException(nameof(ClientBase<TData>))
-            : !this._guid.Equals(default) &&
-              this._clientSocket.Connected;
+    public Boolean IsConnected
+    {
+        get
+        {
+            if (this._disposed)
+            {
+                throw new ObjectDisposedException(objectName: nameof(ClientBase<TData>));
+            }
+            return !this._guid
+                        .Equals(default) &&
+                   this._socket
+                       .Connected;
+        }
+    }
 }
 
 // Non-Public
@@ -39,9 +48,9 @@ partial class ClientBase<TData>
             throw new ArgumentOutOfRangeException(nameof(bufferSize));
         }
 
-        this._clientSocket = new Socket(AddressFamily.InterNetwork,
-                                        SocketType.Stream,
-                                        ProtocolType.Tcp);
+        this._socket = new Socket(addressFamily: AddressFamily.InterNetwork,
+                                  socketType: SocketType.Stream,
+                                  protocolType: ProtocolType.Tcp);
         this._dataBuffer = new Byte[bufferSize];
         this.Port = port;
         this.DataProcessor = processor;
@@ -67,19 +76,37 @@ partial class ClientBase<TData>
     /// Initiates the data receive pipeline.
     /// </summary>
     /// <exception cref="ObjectDisposedException"/>
+    protected void InitiateSocket()
+    {
+        if (this._disposed)
+        {
+            throw new ObjectDisposedException(objectName: nameof(ClientBase<TData>));
+        }
+
+        this._socket = new Socket(addressFamily: AddressFamily.InterNetwork,
+                                  socketType: SocketType.Stream,
+                                  protocolType: ProtocolType.Tcp);
+    }
+
+    /// <summary>
+    /// Initiates the data receive pipeline.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException"/>
     protected void InitiateConnection()
     {
         if (this._disposed)
         {
-            throw new ObjectDisposedException(nameof(ClientBase<TData>));
+            throw new ObjectDisposedException(objectName: nameof(ClientBase<TData>));
         }
 
-        this._clientSocket.BeginReceive(this._dataBuffer,
-                                        0,
-                                        this._dataBuffer.Length,
-                                        SocketFlags.None,
-                                        this.ReceiveCallback,
-                                        null);
+        this._socket
+            .BeginReceive(buffer: this._dataBuffer,
+                          offset: 0,
+                          size: this._dataBuffer
+                                    .Length,
+                          socketFlags: SocketFlags.None,
+                          callback: this.ReceiveCallback,
+                          state: null);
     }
 
     /// <summary>
@@ -91,18 +118,18 @@ partial class ClientBase<TData>
     {
         if (this._disposed)
         {
-            throw new ObjectDisposedException(nameof(ClientBase<TData>));
+            throw new ObjectDisposedException(objectName: nameof(ClientBase<TData>));
         }
 
-        if (this.Connected)
+        if (this.IsConnected)
         {
-            this._clientSocket.Close();
+            this._socket
+                .Close();
             if (raiseEvent)
             {
                 this.OnConnectionClosed();
             }
         }
-        this.Dispose();
     }
 
     /// <summary>
@@ -115,48 +142,53 @@ partial class ClientBase<TData>
     {
         if (this._disposed)
         {
-            throw new ObjectDisposedException(nameof(ClientBase<TData>));
+            throw new ObjectDisposedException(objectName: nameof(ClientBase<TData>));
         }
-        if (data is null)
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
+        ExceptionHelpers.ThrowIfArgumentNull(data);
 
         Byte[] bytes = this.SerializeToBytes(data);
-        this._clientSocket.BeginSend(bytes,
-                                     0,
-                                     bytes.Length,
-                                     SocketFlags.None,
-                                     this.SendCallback,
-                                     null);
-        Thread.Sleep(10);
+        this._socket
+            .BeginSend(buffer: bytes,
+                       offset: 0,
+                       size: bytes.Length,
+                       socketFlags: SocketFlags.None,
+                       callback: this.SendCallback,
+                       state: null);
+        Thread.Sleep(1);
     }
 
     /// <summary>
     /// Gets the <see cref="System.Net.Sockets.Socket"/> that this <see cref="IClient{TData}"/> uses to send data to an <see cref="IServer{TData}"/>.
     /// </summary>
-    protected Socket Socket => this._clientSocket;
+    protected Socket Socket => 
+        this._socket;
 
     private void ReceiveCallback(IAsyncResult result)
     {
-        Int32 received = 0;
-        Byte[]? data = null;
         try
         {
-            received = this._clientSocket.EndReceive(result);
-            data = new Byte[received];
-            Array.Copy(this._dataBuffer,
-                       data,
-                       received);
+            Int32 received = this._socket
+                                 .EndReceive(asyncResult: result);
+            Byte[]  data = new Byte[received];
+            Array.Copy(sourceArray: this._dataBuffer,
+                       sourceIndex: 0,
+                       destinationArray: data,
+                       destinationIndex: 0,
+                       length: received);
+            Array.Clear(array: this._dataBuffer,
+                        index: 0,
+                        length: received);
 
             this.ProcessIncomingData(data);
 
-            this._clientSocket.BeginReceive(this._dataBuffer,
-                                            0,
-                                            this._dataBuffer.Length,
-                                            SocketFlags.None,
-                                            new AsyncCallback(this.ReceiveCallback),
-                                            null);
+            this._socket
+                .BeginReceive(buffer: this._dataBuffer,
+                              offset: 0,
+                              size: this._dataBuffer
+                                        .Length,
+                              socketFlags: SocketFlags.None,
+                              callback: this.ReceiveCallback,
+                              state: null);
         }
         catch (SocketException) { }
         catch (ObjectDisposedException) { }
@@ -166,27 +198,27 @@ partial class ClientBase<TData>
     {
         try
         {
-            this._clientSocket.EndSend(result);
-            if (!this.Connected)
+            this._socket
+                .EndSend(asyncResult: result);
+            if (!this.IsConnected)
             {
                 return;
             }
-            this._clientSocket.BeginReceive(this._dataBuffer,
-                                            0,
-                                            this._dataBuffer.Length,
-                                            SocketFlags.None,
-                                            new AsyncCallback(this.ReceiveCallback),
-                                            null);
+            this._socket
+                .BeginReceive(buffer: this._dataBuffer,
+                              offset: 0,
+                              size: this._dataBuffer
+                                        .Length,
+                              socketFlags: SocketFlags.None,
+                              callback: this.ReceiveCallback,
+                              state: null);
         }
         catch (ObjectDisposedException) { }
     }
 
     private void ProcessIncomingData(Byte[] bytes)
     {
-        if (bytes is null)
-        {
-            throw new ArgumentNullException(nameof(bytes));
-        }
+        ExceptionHelpers.ThrowIfArgumentNull(bytes);
 
         if (bytes.Length == 64)
         {
@@ -201,7 +233,7 @@ partial class ClientBase<TData>
                 Byte[] guidBytes = bytes.Skip(48)
                                         .Take(16)
                                         .ToArray();
-                this._guid = new(guidBytes);
+                this._guid = new(b: guidBytes);
                 this.OnConnectionEstablished();
                 return;
             }
@@ -210,45 +242,38 @@ partial class ClientBase<TData>
         TData data = this.SerializeFromBytes(bytes);
         if (this.DataProcessor is null)
         {
-            this.DataReceived?.Invoke(this,
-                                      new(data));
+            this.DataReceived?
+                .Invoke(sender: this,
+                        eventArgs: new(data: data));
             return;
         }
-        this.DataProcessor.ProcessReceivedData(data);
+        this.DataProcessor
+            .ProcessReceivedData(data: data);
     }
 
     private void OnConnectionEstablished() =>
-        this.ConnectionEstablished?.Invoke(this,
-                                           EventArgs.Empty);
+        this.ConnectionEstablished?
+            .Invoke(sender: this,
+                    eventArgs: EventArgs.Empty);
 
     private void OnConnectionClosed() =>
-        this.ConnectionClosed?.Invoke(this,
-                                      EventArgs.Empty);
+        this.ConnectionClosed?
+            .Invoke(sender: this,
+                    eventArgs: EventArgs.Empty);
 
     [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
-    private readonly Socket _clientSocket;
-
+    private Socket _socket;
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private IClientDataProcessor<TData>? _processor;
-
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private Guid _guid = new();
-
     [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
     private Byte[] _dataBuffer;
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private static readonly Byte[] _shutdownSignature = new Byte[] { 0x72, 0x63, 0x53, 0x2E, 0x6D, 0x6E, 0x75, 0x74, 0x9C, 0x63, 0x5A, 0x78, 0x68, 0x2E, 0xBE, 0x67, 0xE4, 0x75, 0x69, 0x69, 0x6B, 0x65, 0x77, 0x74, 0x6F, 0x6B, 0xEE, 0x2E, 0x61, 0x4E, 0x77, 0x5, 0x61, 0xC2, 0x6B, 0x4E, 0x65, 0x73, 0xD1, 0x6F, 0x53, 0xF7, 0x7A, 0x86, 0x53, 0x68, 0x75, 0x74, 0x64, 0x6F, 0x77, 0x6E, 0x53, 0x65, 0x72, 0x65, 0x72, 0x43, 0x6C, 0x65, 0x68, 0x2E, 0xBE, 0x67 };
-
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private static readonly Byte[] _guidSignature = new Byte[] { 0x72, 0x63, 0x53, 0x2E, 0x6D, 0x6E, 0x75, 0x74, 0x9C, 0x63, 0x5A, 0x78, 0x68, 0x2E, 0xBE, 0x67, 0xE4, 0x75, 0x69, 0x69, 0x6B, 0x65, 0x77, 0x74, 0x6F, 0x6B, 0xEE, 0x2E, 0x61, 0x4E, 0x77, 0x5, 0x61, 0xC2, 0x6B, 0x4E, 0x65, 0x73, 0xD1, 0x6F, 0x53, 0xF7, 0x7A, 0x86, 0x47, 0x75, 0x69, 0x64 };
-
-#pragma warning disable
-
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private const String PROTOCOL_INVALID = "The specified protocol is not implemented for this client.";
-
-#pragma warning restore
 }
 
 // IClient<TData>
@@ -276,37 +301,57 @@ partial class ClientBase<TData> : IClient<TData>
     public Int32 Port { get; }
 
     /// <inheritdoc/>
-    public Guid Guid => this._guid;
+    public Guid Guid => 
+        this._guid;
 
     /// <inheritdoc/>
     public Int32 BufferSize
     {
-        get => this._disposed
-                ? throw new ObjectDisposedException(nameof(ClientBase<TData>))
-                : this._dataBuffer.Length;
-        set => this._dataBuffer = this._disposed
-                                    ? throw new ObjectDisposedException(nameof(ClientBase<TData>))
-                                    : new Byte[value];
+        get
+
+        {
+            if (this._disposed)
+            {
+                throw new ObjectDisposedException(objectName: nameof(ClientBase<TData>));
+            }
+            return this._dataBuffer
+                       .Length;
+        }
+        set
+        {
+            if (this._disposed)
+            {
+                throw new ObjectDisposedException(objectName: nameof(ClientBase<TData>));
+            }
+            this._dataBuffer = new Byte[value];
+        }
     }
 
     /// <inheritdoc/>
     [MaybeNull]
     public IClientDataProcessor<TData>? DataProcessor
     {
-        get => this._disposed
-                ? throw new ObjectDisposedException(nameof(ClientBase<TData>))
-                : this._processor;
+        get
+
+        {
+            if (this._disposed)
+            {
+                throw new ObjectDisposedException(objectName: nameof(ClientBase<TData>));
+            }
+            return this._processor;
+        }
         set
         {
             if (this._disposed)
             {
-                throw new ObjectDisposedException(nameof(ClientBase<TData>));
+                throw new ObjectDisposedException(objectName: nameof(ClientBase<TData>));
             }
 
             this._processor = value;
             if (this._processor is not null)
             {
-                this._processor.Client = this;
+                this._processor
+                    .Client = this;
             }
         }
     }
@@ -323,7 +368,11 @@ partial class ClientBase<TData> : IDisposable
             return;
         }
 
-        this._clientSocket.Dispose();
+        if (this.IsConnected)
+        {
+            this.InitiateDisconnect(false);
+        }
+
         this._disposed = true;
         GC.SuppressFinalize(this);
     }

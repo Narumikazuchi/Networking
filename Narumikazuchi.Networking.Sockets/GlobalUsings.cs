@@ -1,4 +1,5 @@
-﻿global using Narumikazuchi.Serialization.Bytes;
+﻿global using Narumikazuchi.Serialization;
+global using Narumikazuchi.Serialization.Bytes;
 global using System;
 global using System.Collections.Generic;
 global using System.ComponentModel;

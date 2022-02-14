@@ -1,4 +1,4 @@
-﻿namespace Narumikazuchi.Networking.Sockets;
+﻿namespace Narumikazuchi.Networking;
 
 /// <summary>
 /// Specifies the <see cref="ConnectionType"/> that occurred.

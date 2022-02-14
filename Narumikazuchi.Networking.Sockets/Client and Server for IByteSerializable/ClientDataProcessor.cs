@@ -5,7 +5,7 @@
 /// </summary>
 // Non-Public
 public abstract partial class ClientDataProcessor<TMessage>
-    where TMessage : class, IByteSerializable, IEquatable<TMessage>
+    where TMessage : IDeserializable<TMessage>, ISerializable
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ClientDataProcessor{TMessage}"/> class.
@@ -13,15 +13,14 @@ public abstract partial class ClientDataProcessor<TMessage>
     /// <exception cref="ArgumentNullException"/>
     protected ClientDataProcessor([DisallowNull] Client<TMessage> client)
     {
-        if (client is null)
-        {
-            throw new ArgumentNullException(nameof(client));
-        }
+        ExceptionHelpers.ThrowIfArgumentNull(client);
 
         this._client = client;
-        if (this._client.DataProcessor != this)
+        if (this._client
+                .DataProcessor != this)
         {
-            this._client.DataProcessor = this;
+            this._client
+                .DataProcessor = this;
         }
     }
 
@@ -40,7 +39,8 @@ partial class ClientDataProcessor<TMessage> : IClientDataProcessor<TMessage>
     /// Disconnects the <see cref="Client{TMessage}"/> from the <see cref="Server{TMessage}"/>.
     /// </summary>
     public void Disconnect() =>
-        this.Client.Disconnect();
+        this.Client
+            .Disconnect();
 
     /// <summary>
     /// Gets or sets the <see cref="Client{TMessage}"/> associated with this processor.
@@ -52,14 +52,14 @@ partial class ClientDataProcessor<TMessage> : IClientDataProcessor<TMessage>
         get => this._client;
         set
         {
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+            ExceptionHelpers.ThrowIfArgumentNull(value);
+
             this._client = value;
-            if (this._client.DataProcessor != this)
+            if (this._client
+                    .DataProcessor != this)
             {
-                this._client.DataProcessor = this;
+                this._client
+                    .DataProcessor = this;
             }
         }
     }

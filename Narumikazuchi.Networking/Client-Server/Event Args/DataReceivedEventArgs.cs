@@ -1,4 +1,4 @@
-﻿namespace Narumikazuchi.Networking.Sockets;
+﻿namespace Narumikazuchi.Networking;
 
 /// <summary>
 /// Contains the <typeparamref name="TData"/> that has been received by either an <see cref="IClient{TData}"/> or an <see cref="IServer{TData}"/>.

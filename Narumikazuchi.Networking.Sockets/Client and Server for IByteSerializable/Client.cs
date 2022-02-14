@@ -1,10 +1,10 @@
 ﻿namespace Narumikazuchi.Networking.Sockets;
 
 /// <summary>
-/// Represents an <see cref="IClient{TData}"/>, which communicates with <see cref="Server{TMessage}"/> objects through an <see cref="IByteSerializable"/> message class.
+/// Represents an <see cref="IClient{TData}"/>, which communicates with <see cref="Server{TMessage}"/> objects through an <see cref="ISerializable"/> message class.
 /// </summary>
 public sealed partial class Client<TMessage>
-    where TMessage : class, IByteSerializable, IEquatable<TMessage>
+    where TMessage : IDeserializable<TMessage>, ISerializable
 {
     /// <summary>
     /// Creates a new instance of the <see cref="Client{TMessage}"/> class.
@@ -23,11 +23,35 @@ public sealed partial class Client<TMessage>
         {
             throw new ArgumentOutOfRangeException(nameof(bufferSize));
         }
-        return new(port,
-                   bufferSize,
-                   null);
+        return new(port: port,
+                   bufferSize: bufferSize,
+                   processor: null,
+                   strategies: Array.Empty<KeyValuePair<Type, ISerializationDeserializationStrategy<Byte[]>>>());
     }
-
+    /// <summary>
+    /// Creates a new instance of the <see cref="Client{TMessage}"/> class.
+    /// </summary>
+    /// <param name="port">The port through which the connection shall be established.</param>
+    /// <param name="bufferSize">The size of the data buffer for received data in bytes.</param>
+    /// <param name="strategies">The strategies to use for unhandled tpyes during serialization.</param>
+    /// <exception cref="ArgumentOutOfRangeException"/>
+    public static Client<TMessage> CreateClient(in Int32 port,
+                                                in Int32 bufferSize,
+                                                [DisallowNull] IEnumerable<KeyValuePair<Type, ISerializationDeserializationStrategy<Byte[]>>> strategies)
+    {
+        if (port < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(port));
+        }
+        if (bufferSize < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(bufferSize));
+        }
+        return new(port: port,
+                   bufferSize: bufferSize,
+                   processor: null,
+                   strategies: strategies);
+    }
     /// <summary>
     /// Creates a new instance of the <see cref="Client{TMessage}"/> class.
     /// </summary>
@@ -40,10 +64,7 @@ public sealed partial class Client<TMessage>
                                                 in Int32 bufferSize,
                                                 [DisallowNull] ClientDataProcessor<TMessage> processor)
     {
-        if (processor is null)
-        {
-            throw new ArgumentNullException(nameof(processor));
-        }
+        ExceptionHelpers.ThrowIfArgumentNull(processor);
         if (port < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(port));
@@ -52,9 +73,38 @@ public sealed partial class Client<TMessage>
         {
             throw new ArgumentOutOfRangeException(nameof(bufferSize));
         }
-        return new(port,
-                   bufferSize,
-                   processor);
+        return new(port: port,
+                   bufferSize: bufferSize,
+                   processor: processor,
+                   strategies: Array.Empty<KeyValuePair<Type, ISerializationDeserializationStrategy<Byte[]>>>());
+    }
+    /// <summary>
+    /// Creates a new instance of the <see cref="Client{TMessage}"/> class.
+    /// </summary>
+    /// <param name="port">The port through which the connection shall be established.</param>
+    /// <param name="bufferSize">The size of the data buffer for received data in bytes.</param>
+    /// <param name="processor">The processor, who handles the incoming <typeparamref name="TMessage"/> objects.</param>
+    /// <param name="strategies">The strategies to use for unhandled tpyes during serialization.</param>
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="ArgumentOutOfRangeException"/>
+    public static Client<TMessage> CreateClient(in Int32 port,
+                                                in Int32 bufferSize,
+                                                [DisallowNull] ClientDataProcessor<TMessage> processor,
+                                                [DisallowNull] IEnumerable<KeyValuePair<Type, ISerializationDeserializationStrategy<Byte[]>>> strategies)
+    {
+        ExceptionHelpers.ThrowIfArgumentNull(processor);
+        if (port < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(port));
+        }
+        if (bufferSize < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(bufferSize));
+        }
+        return new(port: port,
+                   bufferSize: bufferSize,
+                   processor: processor,
+                   strategies: strategies);
     }
 
     /// <summary>
@@ -70,47 +120,56 @@ partial class Client<TMessage>
 {
     private Client(in Int32 port,
                    in Int32 bufferSize,
-                   [AllowNull] IClientDataProcessor<TMessage>? processor) :
-        base(port,
-             bufferSize,
-             processor)
-    { }
+                   [AllowNull] IClientDataProcessor<TMessage>? processor,
+                   [DisallowNull] IEnumerable<KeyValuePair<Type, ISerializationDeserializationStrategy<Byte[]>>> strategies) :
+        base(port: port,
+             bufferSize: bufferSize,
+             processor: processor)
+    {
+        this._serializer = CreateByteSerializer
+                          .ForSerializationAndDeserialization()
+                          .ConfigureForOwnedType<TMessage>()
+                          .UseDefaultStrategies()
+                          .UseStrategies(strategies)
+                          .Construct();
+    }
 
     private void LoopConnect(IPAddress address)
     {
-        while (!this.Socket.Connected &&
+        while (!this.Socket
+                    .Connected &&
                 this._currentAttempts < MAXATTEMPTS)
         {
             try
             {
                 this._currentAttempts++;
-                this.Socket.Connect(address,
-                                    this.Port);
+                this.Socket
+                    .Connect(address: address,
+                             port: this.Port);
             }
             catch (SocketException) { }
         }
         if (this._currentAttempts == MAXATTEMPTS &&
-            !this.Socket.Connected)
+            !this.Socket
+                 .Connected)
         {
             throw new MaximumAttemptsExceededException();
         }
-        if (this.Socket.Connected)
+        if (this.Socket
+                .Connected)
         {
             this.InitiateConnection();
         }
     }
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private ByteSerializer<TMessage> _serializer = new();
-
+    private IByteSerializerDeserializer<TMessage> _serializer;
     [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
     private Int32 _currentAttempts = 0;
 
-#pragma warning disable
-
+#pragma warning disable IDE1006
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private const Int32 MAXATTEMPTS = 20;
-
 #pragma warning restore
 }
 
@@ -122,11 +181,14 @@ partial class Client<TMessage> : ClientBase<TMessage>
     /// <exception cref="ObjectDisposedException"/>
     public override void Connect([DisallowNull] IPAddress address)
     {
-        if (address is null)
+        ExceptionHelpers.ThrowIfArgumentNull(address);
+
+        if (this.IsConnected)
         {
-            throw new ArgumentNullException(nameof(address));
+            return;
         }
 
+        this.InitiateSocket();
         this._currentAttempts = 0;
         this.LoopConnect(address);
     }
@@ -140,31 +202,39 @@ partial class Client<TMessage> : ClientBase<TMessage>
     /// <exception cref="ArgumentNullException"/>
     public override void Send([DisallowNull] TMessage data)
     {
-        if (data is null)
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
-
-        if (!this.Connected)
+        ExceptionHelpers.ThrowIfArgumentNull(data);
+        if (!this.IsConnected)
         {
             throw new NotConnectedException(this.Socket);
         }
+
         this.InitiateSend(data);
     }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
     [return: NotNull]
-    protected override Byte[] SerializeToBytes([DisallowNull] TMessage data) =>
-        data is null
-            ? throw new ArgumentNullException(nameof(data))
-            : this._serializer.Serialize(data);
+    protected override Byte[] SerializeToBytes([DisallowNull] TMessage data)
+    {
+        ExceptionHelpers.ThrowIfArgumentNull(data);
+
+        using MemoryStream stream = new();
+        this._serializer
+            .Serialize(stream: stream,
+                       graph: data);
+        return stream.ToArray();
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
     [return: NotNull]
-    protected override TMessage SerializeFromBytes([DisallowNull] Byte[] bytes) =>
-        bytes is null
-            ? throw new ArgumentNullException(nameof(bytes))
-            : this._serializer.Deserialize(bytes);
+    protected override TMessage SerializeFromBytes([DisallowNull] Byte[] bytes)
+    {
+        ExceptionHelpers.ThrowIfArgumentNull(bytes);
+
+        using MemoryStream stream = new(buffer: bytes);
+        stream.Position = 0;
+        return this._serializer
+                   .Deserialize(stream: stream)!;
+    }
 }

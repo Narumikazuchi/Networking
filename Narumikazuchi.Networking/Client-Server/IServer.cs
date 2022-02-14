@@ -1,9 +1,10 @@
-﻿namespace Narumikazuchi.Networking.Sockets;
+﻿namespace Narumikazuchi.Networking;
 
 /// <summary>
 /// Represents the base functionality of a socket server.
 /// </summary>
-public interface IServer<TData> : System.IDisposable
+public interface IServer<TData> : 
+    IDisposable
 {
     /// <summary>
     /// Starts the <see cref="IServer{TData}"/> and enables <see cref="IClient{TData}"/> objects to connect to it.
@@ -16,25 +17,25 @@ public interface IServer<TData> : System.IDisposable
     public void Stop();
 
     /// <summary>
-    /// Disconnects the <see cref="IClient{TData}"/> who is associated with the specified <see cref="System.Guid"/>.
+    /// Disconnects the <see cref="IClient{TData}"/> who is associated with the specified <see cref="Guid"/>.
     /// </summary>
     /// <param name="guid">The guid the client is associated with.</param>
     /// <returns><see langword="true"/> if the client was disconnected; otherwise, <see langword="false"/></returns>
-    public System.Boolean Disconnect(in System.Guid guid);
+    public Boolean Disconnect(in Guid guid);
 
     /// <summary>
-    /// Sends the specified <typeparamref name="TData"/> to the <see cref="IClient{TData}"/> associated with the specified <see cref="System.Guid"/>.
+    /// Sends the specified <typeparamref name="TData"/> to the <see cref="IClient{TData}"/> associated with the specified <see cref="Guid"/>.
     /// </summary>
     /// <param name="data">The data to send.</param>
     /// <param name="client">The guid the client is associated with.</param>
-    public void Send([System.Diagnostics.CodeAnalysis.DisallowNull] TData data,
-                     in System.Guid client);
+    public void Send([DisallowNull] TData data,
+                     in Guid client);
 
     /// <summary>
     /// Sends the specified <typeparamref name="TData"/> to the all connected <see cref="IClient{TData}"/> objects.
     /// </summary>
     /// <param name="data">The data to send.</param>
-    public void Broadcast([System.Diagnostics.CodeAnalysis.DisallowNull] TData data);
+    public void Broadcast([DisallowNull] TData data);
 
     /// <summary>
     /// Occurs when a new <see cref="IClient{TData}"/> connected with the <see cref="IServer{TData}"/>.
@@ -42,7 +43,7 @@ public interface IServer<TData> : System.IDisposable
     public event EventHandler<IServer<TData>, ConnectionEventArgs>? ClientConnected;
 
     /// <summary>
-    /// Occurs when an <see cref="IClient{TData}"/> has been disconnected from the <see cref="IServer{TData}"/>, either through <see cref="Disconnect(in System.Guid)"/> or from the client-side.
+    /// Occurs when an <see cref="IClient{TData}"/> has been disconnected from the <see cref="IServer{TData}"/>, either through <see cref="Disconnect(in Guid)"/> or from the client-side.
     /// </summary>
     public event EventHandler<IServer<TData>, ConnectionEventArgs>? ClientDisconnected;
 
@@ -57,18 +58,18 @@ public interface IServer<TData> : System.IDisposable
     /// <summary>
     /// Gets the port through which the <see cref="IServer{TData}"/> is connected.
     /// </summary>
-    public System.Int32 Port { get; }
+    public Int32 Port { get; }
 
     /// <summary>
-    /// Gets or sets the size of the <see cref="System.Byte"/> buffer.
+    /// Gets or sets the size of the <see cref="Byte"/> buffer.
     /// </summary>
-    public System.Int32 BufferSize { get; set; }
+    public Int32 BufferSize { get; set; }
 
     /// <summary>
     /// Gets or sets the condition for a new <see cref="IClient{TData}"/> connection to be accepted.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.NotNull]
-    public System.Func<System.Boolean> AcceptCondition { get; set; }
+    [MaybeNull]
+    public ServerAcceptCondition<TData>? AcceptCondition { get; set; }
 
     /// <summary>
     /// Gets or sets the <see cref="IServerDataProcessor{TData}"/> for this <see cref="IServer{TData}"/>.
@@ -77,12 +78,12 @@ public interface IServer<TData> : System.IDisposable
     /// The <see cref="IServerDataProcessor{TData}"/> provides the <see cref="IServer{TData}"/> with the functionality to process incoming data.
     /// If this property is not set, the <see cref="IServer{TData}"/> will instead raise the <see cref="DataReceived"/> event every time new data will be received.
     /// </remarks>
-    [System.Diagnostics.CodeAnalysis.MaybeNull]
+    [MaybeNull]
     public IServerDataProcessor<TData>? DataProcessor { get; set; }
 
     /// <summary>
-    /// Gets all associated <see cref="System.Guid"/> for the currently connected <see cref="IClient{TData}"/> objects.
+    /// Gets all associated <see cref="Guid"/> for the currently connected <see cref="IClient{TData}"/> objects.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.NotNull]
-    public System.Collections.Generic.IReadOnlyList<System.Guid> Clients { get; }
+    [NotNull]
+    public IReadOnlyList<Guid> Clients { get; }
 }

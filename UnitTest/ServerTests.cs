@@ -6,7 +6,7 @@ public partial class ServerTests
     [TestMethod]
     public void GenericInstantiationTest()
     {
-        using Server<TestMessage> server = Server<TestMessage>.CreateServer(8080, 8192, () => true);
+        using Server<TestMessage> server = Server<TestMessage>.CreateServer(8080, 8192);
         Assert.IsNotNull(server);
         Assert.AreEqual(8080, server.Port);
         Assert.AreEqual(8192, server.BufferSize);
@@ -16,7 +16,7 @@ public partial class ServerTests
     [TestMethod]
     public void InstantiationTest()
     {
-        using Server server = Server.CreateServer(8080, 8192, () => true);
+        using Server server = Server.CreateServer(8080, 8192);
         Assert.IsNotNull(server);
         Assert.AreEqual(8080, server.Port);
         Assert.AreEqual(8192, server.BufferSize);
@@ -26,7 +26,7 @@ public partial class ServerTests
     [TestMethod]
     public void GenericConnectionTest()
     {
-        using Server<TestMessage> server = Server<TestMessage>.CreateServer(8080, 4096, () => true);
+        using Server<TestMessage> server = Server<TestMessage>.CreateServer(8080, 4096);
         using Client<TestMessage> client1 = Client<TestMessage>.CreateClient(8080, 4096);
         using Client<TestMessage> client2 = Client<TestMessage>.CreateClient(8080, 4096);
         Assert.AreEqual(client1.Port, server.Port);
@@ -34,8 +34,8 @@ public partial class ServerTests
         server.Start();
         client1.Connect(IPAddress.Loopback);
         client2.Connect(IPAddress.Loopback);
-        while (!client1.Connected ||
-               !client2.Connected)
+        while (!client1.IsConnected ||
+               !client2.IsConnected)
         {
             Thread.Sleep(1);
         }
@@ -45,7 +45,7 @@ public partial class ServerTests
     [TestMethod]
     public void ConnectionTest()
     {
-        using Server server = Server.CreateServer(8080, 4096, () => true);
+        using Server server = Server.CreateServer(8080, 4096);
         using Client client1 = Client.CreateClient(8080, 4096);
         using Client client2 = Client.CreateClient(8080, 4096);
         Assert.AreEqual(client1.Port, server.Port);
@@ -53,8 +53,8 @@ public partial class ServerTests
         server.Start();
         client1.Connect(IPAddress.Loopback);
         client2.Connect(IPAddress.Loopback);
-        while (!client1.Connected ||
-               !client2.Connected)
+        while (!client1.IsConnected ||
+               !client2.IsConnected)
         {
             Thread.Sleep(1);
         }
@@ -64,7 +64,7 @@ public partial class ServerTests
     [TestMethod]
     public void GenericSendTest()
     {
-        using Server<TestMessage> server = Server<TestMessage>.CreateServer(800, 4096, () => true);
+        using Server<TestMessage> server = Server<TestMessage>.CreateServer(800, 4096);
         using Client<TestMessage> client1 = Client<TestMessage>.CreateClient(800, 4096);
         using Client<TestMessage> client2 = Client<TestMessage>.CreateClient(800, 4096);
         client1.DataProcessor = new ClientProcessor(client1);
@@ -74,8 +74,8 @@ public partial class ServerTests
         server.Start();
         client1.Connect(IPAddress.Loopback);
         client2.Connect(IPAddress.Loopback);
-        while (!client1.Connected ||
-               !client2.Connected)
+        while (!client1.IsConnected ||
+               !client2.IsConnected)
         {
             Thread.Sleep(1);
         }
@@ -86,7 +86,7 @@ public partial class ServerTests
     [TestMethod]
     public void SendTest()
     {
-        using Server server = Server.CreateServer(800, 4096, () => true);
+        using Server server = Server.CreateServer(800, 4096);
         using Client client1 = Client.CreateClient(800, 4096);
         using Client client2 = Client.CreateClient(800, 4096);
         client1.DataReceived += (s, e) => _instance.WriteLine($"[{s.Guid}] From Server: {String.Join(' ', e.Data.Select(b => b.ToString("X")))}");
@@ -96,8 +96,8 @@ public partial class ServerTests
         server.Start();
         client1.Connect(IPAddress.Loopback);
         client2.Connect(IPAddress.Loopback);
-        while (!client1.Connected ||
-               !client2.Connected)
+        while (!client1.IsConnected ||
+               !client2.IsConnected)
         {
             Thread.Sleep(1);
         }
@@ -108,13 +108,13 @@ public partial class ServerTests
     [TestMethod]
     public void GenericReceiveTest()
     {
-        using Server<TestMessage> server = Server<TestMessage>.CreateServer(8080, 4096, () => true);
+        using Server<TestMessage> server = Server<TestMessage>.CreateServer(8080, 4096);
         using Client<TestMessage> client = Client<TestMessage>.CreateClient(8080, 4096);
         server.DataProcessor = new ServerProcessor(server);
         Assert.AreEqual(client.Port, server.Port);
         server.Start();
         client.Connect(IPAddress.Loopback);
-        while (!client.Connected)
+        while (!client.IsConnected)
         {
             Thread.Sleep(1);
         }
@@ -125,13 +125,13 @@ public partial class ServerTests
     [TestMethod]
     public void ReceiveTest()
     {
-        using Server server = Server.CreateServer(8080, 4096, () => true);
+        using Server server = Server.CreateServer(8080, 4096);
         using Client client = Client.CreateClient(8080, 4096);
         server.DataReceived += (s, e) => _instance.WriteLine($"Client[{e.FromClient}]: {String.Join(' ', e.Data.Select(b => b.ToString("X")))}");
         Assert.AreEqual(client.Port, server.Port);
         server.Start();
         client.Connect(IPAddress.Loopback);
-        while (!client.Connected)
+        while (!client.IsConnected)
         {
             Thread.Sleep(1);
         }

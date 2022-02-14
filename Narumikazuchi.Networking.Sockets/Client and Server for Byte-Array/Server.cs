@@ -10,18 +10,12 @@ public sealed partial class Server
     /// </summary>
     /// <param name="port">The port through which the connections shall be established.</param>
     /// <param name="bufferSize">The size of the data buffer for received data in bytes.</param>
-    /// <param name="acceptCondition">The condition for a connection <see cref="Client"/> to be accepted.</param>
     /// <returns>A new <see cref="Server"/> instance with the specified parameters</returns>
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="ArgumentOutOfRangeException"/>
     public static Server CreateServer(in Int32 port,
-                                      in Int32 bufferSize,
-                                      [DisallowNull] Func<Boolean> acceptCondition)
+                                      in Int32 bufferSize)
     {
-        if (acceptCondition is null)
-        {
-            throw new ArgumentNullException(nameof(acceptCondition));
-        }
         if (port < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(port));
@@ -30,10 +24,38 @@ public sealed partial class Server
         {
             throw new ArgumentOutOfRangeException(nameof(bufferSize));
         }
-        return new(port,
-                   bufferSize,
-                   null,
-                   acceptCondition);
+        return new(port: port,
+                   bufferSize: bufferSize,
+                   processor: null,
+                   acceptCondition: null);
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="Server"/> class.
+    /// </summary>
+    /// <param name="port">The port through which the connections shall be established.</param>
+    /// <param name="bufferSize">The size of the data buffer for received data in bytes.</param>
+    /// <param name="acceptCondition">The condition for a connection <see cref="Client"/> to be accepted.</param>
+    /// <returns>A new <see cref="Server"/> instance with the specified parameters</returns>
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="ArgumentOutOfRangeException"/>
+    public static Server CreateServer(in Int32 port,
+                                      in Int32 bufferSize,
+                                      [DisallowNull] ServerAcceptCondition<Byte[]> acceptCondition)
+    {
+        ExceptionHelpers.ThrowIfArgumentNull(acceptCondition);
+        if (port < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(port));
+        }
+        if (bufferSize < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(bufferSize));
+        }
+        return new(port: port,
+                   bufferSize: bufferSize,
+                   processor: null,
+                   acceptCondition: acceptCondition);
     }
 
     /// <summary>
@@ -49,16 +71,10 @@ public sealed partial class Server
     public static Server CreateServer(in Int32 port,
                                       in Int32 bufferSize,
                                       [DisallowNull] ServerDataProcessor processor,
-                                      [DisallowNull] Func<Boolean> acceptCondition)
+                                      [DisallowNull] ServerAcceptCondition<Byte[]> acceptCondition)
     {
-        if (acceptCondition is null)
-        {
-            throw new ArgumentNullException(nameof(acceptCondition));
-        }
-        if (processor is null)
-        {
-            throw new ArgumentNullException(nameof(processor));
-        }
+        ExceptionHelpers.ThrowIfArgumentNull(acceptCondition);
+        ExceptionHelpers.ThrowIfArgumentNull(processor);
         if (port < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(port));
@@ -67,10 +83,10 @@ public sealed partial class Server
         {
             throw new ArgumentOutOfRangeException(nameof(bufferSize));
         }
-        return new(port,
-                   bufferSize,
-                   processor,
-                   acceptCondition);
+        return new(port: port,
+                   bufferSize: bufferSize,
+                   processor: processor,
+                   acceptCondition: acceptCondition);
     }
 }
 
@@ -80,11 +96,11 @@ partial class Server
     private Server(in Int32 port,
                    in Int32 bufferSize,
                    [AllowNull] IServerDataProcessor<Byte[]>? processor,
-                   [DisallowNull] Func<Boolean> acceptCondition) :
-        base(port,
-             bufferSize,
-             processor,
-             acceptCondition)
+                   [AllowNull] ServerAcceptCondition<Byte[]>? acceptCondition) :
+        base(port: port,
+             bufferSize: bufferSize,
+             processor: processor,
+             condition: acceptCondition)
     { }
 }
 
@@ -113,12 +129,10 @@ partial class Server : ServerBase<Byte[]>
     public override void Send([DisallowNull] Byte[] data,
                               in Guid client)
     {
-        if (data is null)
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
-        this.InitiateSend(data,
-                          client);
+        ExceptionHelpers.ThrowIfArgumentNull(data);
+
+        this.InitiateSend(data: data,
+                          client: client);
     }
 
     /// <inheritdoc/>
@@ -126,26 +140,28 @@ partial class Server : ServerBase<Byte[]>
     /// <exception cref="ObjectDisposedException"/>
     public override void Broadcast([DisallowNull] Byte[] data)
     {
-        if (data is null)
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
+        ExceptionHelpers.ThrowIfArgumentNull(data);
+
         this.InitiateBroadcast(data);
     }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
     [return: NotNull]
-    protected override Byte[] SerializeToBytes([DisallowNull] Byte[] data) =>
-        data is null
-            ? throw new ArgumentNullException(nameof(data))
-            : data;
+    protected override Byte[] SerializeToBytes([DisallowNull] Byte[] data)
+    {
+        ExceptionHelpers.ThrowIfArgumentNull(data);
+
+        return data;
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
     [return: NotNull]
-    protected override Byte[] SerializeFromBytes([DisallowNull] Byte[] bytes) =>
-        bytes is null
-            ? throw new ArgumentNullException(nameof(bytes))
-            : bytes;
+    protected override Byte[] SerializeFromBytes([DisallowNull] Byte[] bytes)
+    {
+        ExceptionHelpers.ThrowIfArgumentNull(bytes);
+
+        return bytes;
+    }
 }
