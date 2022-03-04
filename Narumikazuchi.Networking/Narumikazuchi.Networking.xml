@@ -1,0 +1,334 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Narumikazuchi.Networking</name>
+    </assembly>
+    <members>
+        <member name="T:Narumikazuchi.Networking.ConnectionType">
+            <summary>
+            Specifies the <see cref="T:Narumikazuchi.Networking.ConnectionType"/> that occurred.
+            </summary>
+        </member>
+        <member name="F:Narumikazuchi.Networking.ConnectionType.ConnectionEstablished">
+            <summary>
+            A connection was established.
+            </summary>
+        </member>
+        <member name="F:Narumikazuchi.Networking.ConnectionType.ConnectionClosed">
+            <summary>
+            A connection was closed.
+            </summary>
+        </member>
+        <member name="F:Narumikazuchi.Networking.ConnectionType.ConnectionLost">
+            <summary>
+            A connection was lost.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.ServerAcceptCondition`1">
+            <summary>
+            Represents the condition that has to be met for a new client to be accepted by the server.
+            </summary>
+            <param name="server">The server that has been connected to.</param>
+            <param name="guidOfNewClient">The <see cref="T:System.Guid"/> that the server has associated with the new client.</param>
+            <returns><see langword="true"/> if the client will get accepted by the server; otherwise, <see langword="false"/></returns>
+        </member>
+        <member name="T:Narumikazuchi.Networking.ConnectionEventArgs">
+            <summary>
+            Contains the connected or disconnected client.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.ConnectionEventArgs.#ctor(System.Guid,Narumikazuchi.Networking.ConnectionType@)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.ConnectionEventArgs"/> class.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="P:Narumikazuchi.Networking.ConnectionEventArgs.Client">
+            <summary>
+            Gets or sets the client <see cref="T:System.Net.Sockets.Socket"/> that connected/disconnected.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.ConnectionEventArgs.EventType">
+            <summary>
+            Gets or sets if the connection was established, closed or lost.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.DataReceivedEventArgs`1">
+            <summary>
+            Contains the <typeparamref name="TData"/> that has been received by either an <see cref="T:Narumikazuchi.Networking.IClient`1"/> or an <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.DataReceivedEventArgs`1.#ctor(`0,System.Guid@)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.DataReceivedEventArgs`1"/> class.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.DataReceivedEventArgs`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.DataReceivedEventArgs`1"/> class.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+        <member name="P:Narumikazuchi.Networking.DataReceivedEventArgs`1.FromClient">
+            <summary>
+            Gets the <see cref="T:System.Guid"/> of the <see cref="T:Narumikazuchi.Networking.IClient`1"/> the was received from. This is <see langword="null"/> if the <typeparamref name="TData"/> was received from an <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.DataReceivedEventArgs`1.Data">
+            <summary>
+            Gets the <typeparamref name="TData"/> that has been received.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.IClient`1">
+            <summary>
+            Represents the base functionality of a socket client.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IClient`1.Connect(System.Net.IPAddress)">
+            <summary>
+            Connects the <see cref="T:Narumikazuchi.Networking.IClient`1"/> to the specified IP-Address.
+            </summary>
+            <param name="address">The address to connect to.</param>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IClient`1.Disconnect">
+            <summary>
+            Disconnects the <see cref="T:Narumikazuchi.Networking.IClient`1"/> from it's current connection to an <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IClient`1.Send(`0)">
+            <summary>
+            Sends the specified <typeparamref name="TData"/> to the connected <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+            <param name="data">The data to send.</param>
+        </member>
+        <member name="E:Narumikazuchi.Networking.IClient`1.ConnectionClosed">
+            <summary>
+            Occurs when the connection to an <see cref="T:Narumikazuchi.Networking.IServer`1"/> has been closed, either client-side or server-side.
+            </summary>
+        </member>
+        <member name="E:Narumikazuchi.Networking.IClient`1.ConnectionEstablished">
+            <summary>
+            Occurs when the connection to an <see cref="T:Narumikazuchi.Networking.IServer`1"/> has been successfully established.
+            </summary>
+        </member>
+        <member name="E:Narumikazuchi.Networking.IClient`1.DataReceived">
+            <summary>
+            Occurs when the <see cref="P:Narumikazuchi.Networking.IClient`1.DataProcessor"/> property is set to <see langword="null"/> and the <see cref="T:Narumikazuchi.Networking.IClient`1"/> receives <typeparamref name="TData"/> from it's connected <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+            <remarks>
+            This event will never get raised, if the <see cref="P:Narumikazuchi.Networking.IClient`1.DataProcessor"/> property is set to a not-null object.
+            </remarks>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IClient`1.Port">
+            <summary>
+            Gets the port through which the <see cref="T:Narumikazuchi.Networking.IClient`1"/> is connected.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IClient`1.BufferSize">
+            <summary>
+            Gets or sets the size of the <see cref="T:System.Byte"/> buffer.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IClient`1.Guid">
+            <summary>
+            Gets the <see cref="P:Narumikazuchi.Networking.IClient`1.Guid"/> that this <see cref="T:Narumikazuchi.Networking.IClient`1"/> is assigned to on it's connected <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IClient`1.DataProcessor">
+            <summary>
+            Gets or sets the <see cref="T:Narumikazuchi.Networking.IClientDataProcessor`1"/> for this <see cref="T:Narumikazuchi.Networking.IClient`1"/>.
+            </summary>
+            <remarks>
+            The <see cref="T:Narumikazuchi.Networking.IClientDataProcessor`1"/> provides the <see cref="T:Narumikazuchi.Networking.IClient`1"/> with the functionality to process incoming data.
+            If this property is not set, the <see cref="T:Narumikazuchi.Networking.IClient`1"/> will instead raise the <see cref="E:Narumikazuchi.Networking.IClient`1.DataReceived"/> event every time new data will be received.
+            </remarks>
+        </member>
+        <member name="T:Narumikazuchi.Networking.IClientDataProcessor`1">
+            <summary>
+            Represents an object which process any <typeparamref name="TData"/> that the associated <see cref="T:Narumikazuchi.Networking.IClient`1"/> receives.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IClientDataProcessor`1.ProcessReceivedData(`0)">
+            <summary>
+            Process the specified <typeparamref name="TData"/> which this method recevied from it's associated <see cref="T:Narumikazuchi.Networking.IClient`1"/>.
+            </summary>
+            <param name="data">The data received by the associated <see cref="T:Narumikazuchi.Networking.IClient`1"/>.</param>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IClientDataProcessor`1.Disconnect">
+            <summary>
+            Disconnects the associated <see cref="T:Narumikazuchi.Networking.IClient`1"/> from the <see cref="T:Narumikazuchi.Networking.IServer`1"/> it is connected to.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IClientDataProcessor`1.Client">
+            <summary>
+            Gets or sets the associated <see cref="T:Narumikazuchi.Networking.IClient`1"/>.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.IServer`1">
+            <summary>
+            Represents the base functionality of a socket server.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IServer`1.Start">
+            <summary>
+            Starts the <see cref="T:Narumikazuchi.Networking.IServer`1"/> and enables <see cref="T:Narumikazuchi.Networking.IClient`1"/> objects to connect to it.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IServer`1.Stop">
+            <summary>
+            Stops the <see cref="T:Narumikazuchi.Networking.IServer`1"/> and closes the connection to all connected <see cref="T:Narumikazuchi.Networking.IClient`1"/> objects.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IServer`1.Disconnect(System.Guid@)">
+            <summary>
+            Disconnects the <see cref="T:Narumikazuchi.Networking.IClient`1"/> who is associated with the specified <see cref="T:System.Guid"/>.
+            </summary>
+            <param name="guid">The guid the client is associated with.</param>
+            <returns><see langword="true"/> if the client was disconnected; otherwise, <see langword="false"/></returns>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IServer`1.Send(`0,System.Guid@)">
+            <summary>
+            Sends the specified <typeparamref name="TData"/> to the <see cref="T:Narumikazuchi.Networking.IClient`1"/> associated with the specified <see cref="T:System.Guid"/>.
+            </summary>
+            <param name="data">The data to send.</param>
+            <param name="client">The guid the client is associated with.</param>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IServer`1.Broadcast(`0)">
+            <summary>
+            Sends the specified <typeparamref name="TData"/> to the all connected <see cref="T:Narumikazuchi.Networking.IClient`1"/> objects.
+            </summary>
+            <param name="data">The data to send.</param>
+        </member>
+        <member name="E:Narumikazuchi.Networking.IServer`1.ClientConnected">
+            <summary>
+            Occurs when a new <see cref="T:Narumikazuchi.Networking.IClient`1"/> connected with the <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+        </member>
+        <member name="E:Narumikazuchi.Networking.IServer`1.ClientDisconnected">
+            <summary>
+            Occurs when an <see cref="T:Narumikazuchi.Networking.IClient`1"/> has been disconnected from the <see cref="T:Narumikazuchi.Networking.IServer`1"/>, either through <see cref="M:Narumikazuchi.Networking.IServer`1.Disconnect(System.Guid@)"/> or from the client-side.
+            </summary>
+        </member>
+        <member name="E:Narumikazuchi.Networking.IServer`1.DataReceived">
+            <summary>
+            Occurs when the <see cref="P:Narumikazuchi.Networking.IServer`1.DataProcessor"/> property is set to <see langword="null"/> and the <see cref="T:Narumikazuchi.Networking.IServer`1"/> receives <typeparamref name="TData"/> from one of it's connected <see cref="T:Narumikazuchi.Networking.IClient`1"/> objects.
+            </summary>
+            <remarks>
+            This event will never get raised, if the <see cref="P:Narumikazuchi.Networking.IServer`1.DataProcessor"/> property is set to a not-null object.
+            </remarks>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IServer`1.Port">
+            <summary>
+            Gets the port through which the <see cref="T:Narumikazuchi.Networking.IServer`1"/> is connected.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IServer`1.BufferSize">
+            <summary>
+            Gets or sets the size of the <see cref="T:System.Byte"/> buffer.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IServer`1.AcceptCondition">
+            <summary>
+            Gets or sets the condition for a new <see cref="T:Narumikazuchi.Networking.IClient`1"/> connection to be accepted.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IServer`1.DataProcessor">
+            <summary>
+            Gets or sets the <see cref="T:Narumikazuchi.Networking.IServerDataProcessor`1"/> for this <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+            <remarks>
+            The <see cref="T:Narumikazuchi.Networking.IServerDataProcessor`1"/> provides the <see cref="T:Narumikazuchi.Networking.IServer`1"/> with the functionality to process incoming data.
+            If this property is not set, the <see cref="T:Narumikazuchi.Networking.IServer`1"/> will instead raise the <see cref="E:Narumikazuchi.Networking.IServer`1.DataReceived"/> event every time new data will be received.
+            </remarks>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IServer`1.Clients">
+            <summary>
+            Gets all associated <see cref="T:System.Guid"/> for the currently connected <see cref="T:Narumikazuchi.Networking.IClient`1"/> objects.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.IServerDataProcessor`1">
+            <summary>
+            Represents an object which process any <typeparamref name="TData"/> that the associated <see cref="T:Narumikazuchi.Networking.IServer`1"/> receives.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IServerDataProcessor`1.ProcessReceivedData(`0,System.Guid@)">
+            <summary>
+            Process the specified <typeparamref name="TData"/> which this method recevied from it's associated <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+            <param name="data">The data received by the associated <see cref="T:Narumikazuchi.Networking.IServer`1"/>.</param>
+            <param name="fromClient">The guid of the associated <see cref="T:Narumikazuchi.Networking.IClient`1"/>.</param>
+        </member>
+        <member name="M:Narumikazuchi.Networking.IServerDataProcessor`1.DisconnectClient(System.Guid@)">
+            <summary>
+            Disconnects the <see cref="T:Narumikazuchi.Networking.IClient`1"/> associated with the specified <see cref="T:System.Guid"/> from the associated <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+        </member>
+        <member name="P:Narumikazuchi.Networking.IServerDataProcessor`1.Server">
+            <summary>
+            Gets or sets the associated <see cref="T:Narumikazuchi.Networking.IServer`1"/>.
+            </summary>
+        </member>
+        <member name="T:Narumikazuchi.Networking.MacAddress">
+            <summary>
+            Represents a standardized MAC-Address.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.#ctor">
+            <summary>
+            Initializes a new <see cref="T:Narumikazuchi.Networking.MacAddress"/> instance.
+            </summary>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.#ctor(System.Byte[])">
+            <summary>
+            Initializes a new <see cref="T:Narumikazuchi.Networking.MacAddress"/> instance.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.ArgumentOutOfRangeException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.ToBytes">
+            <summary>
+            Returns this object as an array of bytes.
+            </summary>
+            <returns>An array of bytes.</returns>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.System#IComparable#CompareTo(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.CompareTo(Narumikazuchi.Networking.MacAddress)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.Equals(Narumikazuchi.Networking.MacAddress)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.Parse(System.String,System.IFormatProvider)">
+            <summary>
+            Parses the specified input string into a <see cref="T:Narumikazuchi.Networking.MacAddress"/> object.
+            </summary>
+            <param name="macAddress">The string to parse.</param>
+            <param name="provider">An object that supplies culture-specific information about the format of <paramref name="macAddress"/>. If it's <see langword="null"/> then the current threads culture will be used.</param>
+            <returns>A <see cref="T:Narumikazuchi.Networking.MacAddress"/> representing the input string.</returns>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.FormatException"/>
+        </member>
+        <member name="M:Narumikazuchi.Networking.MacAddress.TryParse(System.String,System.IFormatProvider,Narumikazuchi.Networking.MacAddress@)">
+            <summary>
+            Parses the specified input string into a <see cref="T:Narumikazuchi.Networking.MacAddress"/> object.
+            </summary>
+            <param name="macAddress">The string to parse.</param>
+            <param name="provider">An object that supplies culture-specific information about the format of <paramref name="macAddress"/>. If it's <see langword="null"/> then the current threads culture will be used.</param>
+            <param name="address">A <see cref="T:Narumikazuchi.Networking.MacAddress"/> representing the input string.</param>
+            <returns><see langword="true"/> if the parsing succeeded; else <see langword="false"/></returns>
+            <exception cref="T:System.ArgumentNullException"/>
+        </member>
+    </members>
+</doc>
