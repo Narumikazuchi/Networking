@@ -11,10 +11,10 @@ public readonly partial struct MacAddress
     /// </summary>
     public MacAddress()
     {
-        this._address = new Byte[ADDRESSLENGTH];
-        this._hashcode = 0;
-        this._integerValue = 0;
-        this._stringValue = "00:00:00:00:00:00";
+        m_Address = new Byte[ADDRESSLENGTH];
+        m_Hashcode = 0;
+        m_IntegerValue = 0;
+        m_StringValue = "00:00:00:00:00:00";
     }
 
     /// <summary>
@@ -22,28 +22,24 @@ public readonly partial struct MacAddress
     /// </summary>
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="ArgumentOutOfRangeException"/>
-    public MacAddress([DisallowNull] Byte[] address)
+    public MacAddress([DisallowNull] Byte[] address!!)
     {
-        if (address is null)
-        {
-            throw new ArgumentNullException(nameof(address));
-        }
         if (address.Length != ADDRESSLENGTH)
         {
-            throw new ArgumentOutOfRangeException(nameof(address),
-                                                  WRONG_LENGTH);
+            throw new ArgumentOutOfRangeException(paramName: nameof(address),
+                                                  message: WRONG_LENGTH);
         }
-        this._address = address;
-        this._hashcode = this._address.Sum(b => b.GetHashCode());
-        this._stringValue = String.Join(separator: ':',
-                                        values: this._address.Select(b => b.ToString("X2")));
+        m_Address = address;
+        m_Hashcode = m_Address.Sum(b => b.GetHashCode());
+        m_StringValue = String.Join(separator: ':',
+                                    values: m_Address.Select(b => b.ToString("X2")));
 
         Int64 myValue = 0L;
         for (Int32 i = 0; i < ADDRESSLENGTH; i++)
         {
-            myValue += (Int64)this._address[^(i + 1)] << (i * 8);
+            myValue += (Int64)m_Address[^(i + 1)] << (i * 8);
         }
-        this._integerValue = myValue;
+        m_IntegerValue = myValue;
     }
 
     /// <summary>
@@ -55,51 +51,43 @@ public readonly partial struct MacAddress
     public Byte[] ToBytes()
     {
         Byte[] result = new Byte[ADDRESSLENGTH];
-        Array.Copy(this._address,
-                   result,
-                   ADDRESSLENGTH);
+        Array.Copy(sourceArray: m_Address,
+                   destinationArray: result,
+                   length: ADDRESSLENGTH);
         return result;
     }
 
     /// <inheritdoc/>
     [Pure]
     public override Int32 GetHashCode() =>
-        this._hashcode;
+        m_Hashcode;
 
     /// <inheritdoc/>
     [Pure]
     public override Boolean Equals([AllowNull] Object? obj) =>
-        obj is MacAddress other &&
-        this.Equals(other) ||
-        obj is Byte[] address &&
-        this.Equals(address);
+        (obj is MacAddress other &&
+        this.Equals(other)) ||
+        (obj is Byte[] address &&
+        this.Equals(address));
 
     /// <inheritdoc/>
     [Pure]
     [return: MaybeNull]
     public override String? ToString() =>
-        this._stringValue;
+        m_StringValue;
 }
 
 // Non-Public
 partial struct MacAddress
 {
-    private static MacAddress ParseInternal(String? macAddress)
+    private static MacAddress ParseInternal(String macAddress!!)
     {
-        if (macAddress is null)
-        {
-            throw new ArgumentNullException(nameof(macAddress));
-        }
-
-        // Matches the first group (any digit or letter a-f * 2) exactly 5 times and then another time, but here without the optional seperators (-, :)
-        Regex regex = new(@"(?:\s*[\dA-Fa-f][\dA-Fa-f]\s*[:-]?){5}\s*[\dA-Fa-f][\dA-Fa-f]\s*");
-
-        if (!regex.IsMatch(input: macAddress))
+        if (!s_Regex.IsMatch(input: macAddress))
         {
             throw new FormatException(INCORRECT_FORMAT);
         }
 
-        Match match = regex.Match(input: macAddress);
+        Match match = s_Regex.Match(input: macAddress);
         String raw = match.Value
                           .Replace(oldValue: " ", newValue: "")
                           .Replace(oldValue: "-", newValue: "")
@@ -117,16 +105,16 @@ partial struct MacAddress
         return new(bytes);
     }
 
+    // Matches the first group (any digit or letter a-f * 2) exactly 5 times and then another time, but here without the optional seperators (-, :)
+    private static readonly Regex s_Regex = new(@"(?:\s*[\dA-Fa-f][\dA-Fa-f]\s*[:-]?){5}\s*[\dA-Fa-f][\dA-Fa-f]\s*");
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private readonly Byte[] _address;
+    private readonly Byte[] m_Address;
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private readonly Int32 _hashcode;
+    private readonly Int32 m_Hashcode;
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private readonly String _stringValue;
+    private readonly String m_StringValue;
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private readonly Int64 _integerValue;
-
-#pragma warning disable
+    private readonly Int64 m_IntegerValue;
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private const Int32 ADDRESSLENGTH = 6;
@@ -134,8 +122,6 @@ partial struct MacAddress
     private const String WRONG_LENGTH = "The address does not have the correct length for a MAC address.";
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     private const String INCORRECT_FORMAT = "The address does not have the correct format for a MAC address.";
-
-#pragma warning restore
 }
 
 // IComparable
@@ -143,10 +129,14 @@ partial struct MacAddress : IComparable
 {
     /// <inheritdoc/>
     [Pure]
-    Int32 IComparable.CompareTo(Object? other) =>
-        other is MacAddress address
-            ? this.CompareTo(address)
-            : -1;
+    Int32 IComparable.CompareTo(Object? other)
+    {
+        if (other is MacAddress address)
+        {
+            return this.CompareTo(address);
+        }
+        return -1;
+    }
 }
 
 // IComparable<T>
@@ -155,46 +145,54 @@ partial struct MacAddress : IComparable<MacAddress>
     /// <inheritdoc/>
     [Pure]
     public Int32 CompareTo(MacAddress other) =>
-        this._integerValue.CompareTo(value: other._integerValue);
+        m_IntegerValue.CompareTo(value: other.m_IntegerValue);
 }
 
 // IComparisonOperators<T, U>
 partial struct MacAddress : IComparisonOperators<MacAddress, MacAddress>
 {
-#pragma warning disable
+#pragma warning disable CS1591
+    [Pure]
+    public static Boolean operator >(MacAddress left, MacAddress right)
+    {
+        return left.CompareTo(right) > 0;
+    }
 
     [Pure]
-    public static Boolean operator >(MacAddress left, MacAddress right) =>
-        left.CompareTo(right) > 0;
+    public static Boolean operator >=(MacAddress left, MacAddress right)
+    {
+        return left.CompareTo(right) >= 0;
+    }
 
     [Pure]
-    public static Boolean operator >=(MacAddress left, MacAddress right) =>
-        left.CompareTo(right) >= 0;
+    public static Boolean operator <(MacAddress left, MacAddress right)
+    {
+        return left.CompareTo(right) < 0;
+    }
 
     [Pure]
-    public static Boolean operator <(MacAddress left, MacAddress right) =>
-        left.CompareTo(right) < 0;
-
-    [Pure]
-    public static Boolean operator <=(MacAddress left, MacAddress right) =>
-        left.CompareTo(right) <= 0;
-
+    public static Boolean operator <=(MacAddress left, MacAddress right)
+    {
+        return left.CompareTo(right) <= 0;
+    }
 #pragma warning restore
 }
 
 // IEqualityOperators<T, U>
 partial struct MacAddress : IEqualityOperators<MacAddress, MacAddress>
 {
-#pragma warning disable
+#pragma warning disable CS1591
+    [Pure]
+    public static Boolean operator ==(MacAddress left, MacAddress right)
+    {
+        return left.Equals(right);
+    }
 
     [Pure]
-    public static Boolean operator ==(MacAddress left, MacAddress right) =>
-        left.Equals(right);
-
-    [Pure]
-    public static Boolean operator !=(MacAddress left, MacAddress right) =>
-        !left.Equals(right);
-
+    public static Boolean operator !=(MacAddress left, MacAddress right)
+    {
+        return !left.Equals(right);
+    }
 #pragma warning restore
 }
 
@@ -205,24 +203,23 @@ partial struct MacAddress : IEquatable<MacAddress>
     [Pure]
     public Boolean Equals(MacAddress other)
     {
-        if (this._address is null &&
-            other._address is null)
+        if (m_Address is null &&
+            other.m_Address is null)
         {
             return true;
         }
-        if (this._address is not null &&
-            other._address is null ||
-            this._address is null &&
-            other._address is not null)
+        if ((m_Address is not null &&
+            other.m_Address is null) ||
+            (m_Address is null &&
+            other.m_Address is not null))
         {
             return false;
         }
         for (Int32 i = 0;
-             i < this._address!
-                     .Length; 
+             i < m_Address!.Length; 
              i++)
         {
-            if (this._address[i] != other._address![i])
+            if (m_Address[i] != other.m_Address![i])
             {
                 return false;
             }
@@ -242,7 +239,7 @@ partial struct MacAddress : IParseable<MacAddress>
     /// <returns>A <see cref="MacAddress"/> representing the input string.</returns>
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="FormatException"/>
-    public static MacAddress Parse([DisallowNull] String macAddress,
+    public static MacAddress Parse([DisallowNull] String macAddress!!,
                                    [AllowNull] IFormatProvider? provider) =>
         ParseInternal(macAddress);
 
@@ -258,10 +255,16 @@ partial struct MacAddress : IParseable<MacAddress>
                                    [AllowNull] IFormatProvider? provider,
                                    out MacAddress address)
     {
+        if (macAddress is null)
+        {
+            address = default;
+            return false;
+        }
+
         try
         {
             address = ParseInternal(macAddress);
-            return !address.Equals(default);
+            return true;
         }
         catch
         {

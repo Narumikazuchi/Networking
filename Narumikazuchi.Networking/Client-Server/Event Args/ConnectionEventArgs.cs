@@ -12,7 +12,7 @@ public sealed partial class ConnectionEventArgs
     public ConnectionEventArgs(Guid whichClient,
                                in ConnectionType type)
     {
-        this._client = whichClient;
+        m_Client = whichClient;
         this.EventType = type;
     }
 
@@ -21,8 +21,8 @@ public sealed partial class ConnectionEventArgs
     /// </summary>
     public Guid Client
     {
-        get => _client;
-        set => this._client = value;
+        get => m_Client;
+        set => m_Client = value;
     }
 
     /// <summary>
@@ -35,5 +35,5 @@ public sealed partial class ConnectionEventArgs
 partial class ConnectionEventArgs : EventArgs
 {
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    private Guid _client;
+    private Guid m_Client;
 }
