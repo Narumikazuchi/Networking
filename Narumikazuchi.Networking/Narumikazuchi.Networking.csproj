@@ -1,47 +1,43 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <LangVersion>preview</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <EnablePreviewFeatures>True</EnablePreviewFeatures>
-    <Authors>Narumikazuchi</Authors>
-    <Description>For now this only contains the MacAddress struct, but for future projects more features may be added.</Description>
-    <Copyright>©2021 Narumikazuchi</Copyright>
-    <RepositoryUrl>https://github.com/Narumikazuchi/Networking</RepositoryUrl>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <Version>2.0.0</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/Narumikazuchi/Networking/wiki</PackageProjectUrl>
-    <PackageIcon>logo.png</PackageIcon>
-    <PackageTags>Mac Address; Mac</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<LangVersion>preview</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<EnablePreviewFeatures>True</EnablePreviewFeatures>
+		<Authors>Narumikazuchi</Authors>
+		<PackageReadmeFile>README nuget.md</PackageReadmeFile>
+		<Copyright>©2021 Narumikazuchi</Copyright>
+		<RepositoryUrl>https://github.com/Narumikazuchi/Networking</RepositoryUrl>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<Version>2.0.0</Version>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/Narumikazuchi/Networking/wiki</PackageProjectUrl>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageTags>Mac Address; Mac; Client; Server; Network-Communication</PackageTags>
+		<DocumentationFile>Narumikazuchi.Networking.xml</DocumentationFile>
+		<PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>Narumikazuchi.Networking.xml</DocumentationFile>
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
+	<ItemGroup>
+		<None Include="..\logo.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\README nuget.md">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>Narumikazuchi.Networking.xml</DocumentationFile>
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\logo.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\submodules\Common\Narumikazuchi\Narumikazuchi.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\submodules\Common\Narumikazuchi\Narumikazuchi.csproj" />
+	</ItemGroup>
 
 </Project>
