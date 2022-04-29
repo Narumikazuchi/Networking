@@ -11,7 +11,8 @@
 		<Copyright>©2021 Narumikazuchi</Copyright>
 		<RepositoryUrl>https://github.com/Narumikazuchi/Networking</RepositoryUrl>
 		<PackageReleaseNotes></PackageReleaseNotes>
-		<Version>2.0.0</Version>
+		<Description>This library contains the MacAddress struct as well as some interfaces and delegates for server and client implementations. For more information about the contained functionality visit the [wiki](https://github.com/Narumikazuchi/Networking/wiki).</Description>
+		<Version>2.1.0</Version>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/Narumikazuchi/Networking/wiki</PackageProjectUrl>
@@ -30,6 +31,10 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
 		<None Include="..\README nuget.md">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
@@ -37,7 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\submodules\Common\Narumikazuchi\Narumikazuchi.csproj" />
+	  <PackageReference Include="Narumikazuchi" Version="2.2.1" />
 	</ItemGroup>
 
 </Project>

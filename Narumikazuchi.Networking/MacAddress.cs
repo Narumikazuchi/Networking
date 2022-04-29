@@ -22,8 +22,10 @@ public readonly partial struct MacAddress
     /// </summary>
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="ArgumentOutOfRangeException"/>
-    public MacAddress([DisallowNull] Byte[] address!!)
+    public MacAddress([DisallowNull] Byte[] address)
     {
+        ArgumentNullException.ThrowIfNull(address);
+
         if (address.Length != ADDRESSLENGTH)
         {
             throw new ArgumentOutOfRangeException(paramName: nameof(address),
@@ -72,16 +74,18 @@ public readonly partial struct MacAddress
 
     /// <inheritdoc/>
     [Pure]
-    [return: MaybeNull]
-    public override String? ToString() =>
+    [return: NotNull]
+    public override String ToString() =>
         m_StringValue;
 }
 
 // Non-Public
 partial struct MacAddress
 {
-    private static MacAddress ParseInternal(String macAddress!!)
+    private static MacAddress ParseInternal(String macAddress)
     {
+        ArgumentNullException.ThrowIfNull(macAddress);
+
         if (!s_Regex.IsMatch(input: macAddress))
         {
             throw new FormatException(INCORRECT_FORMAT);
@@ -239,7 +243,7 @@ partial struct MacAddress : IParseable<MacAddress>
     /// <returns>A <see cref="MacAddress"/> representing the input string.</returns>
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="FormatException"/>
-    public static MacAddress Parse([DisallowNull] String macAddress!!,
+    public static MacAddress Parse([DisallowNull] String macAddress,
                                    [AllowNull] IFormatProvider? provider) =>
         ParseInternal(macAddress);
 

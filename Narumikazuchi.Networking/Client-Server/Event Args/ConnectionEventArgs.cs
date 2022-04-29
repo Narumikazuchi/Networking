@@ -8,8 +8,7 @@ public sealed partial class ConnectionEventArgs
     /// <summary>
     /// Initializes a new instance of the <see cref="ConnectionEventArgs"/> class.
     /// </summary>
-    /// <exception cref="ArgumentNullException"/>
-    public ConnectionEventArgs(Guid whichClient,
+    public ConnectionEventArgs(in Guid whichClient,
                                in ConnectionType type)
     {
         m_Client = whichClient;

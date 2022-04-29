@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Narumikazuchi.Networking", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{F760D5BB-36B3-4A5E-9489-203961F55B38}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "submodules", "submodules", "{3CC5D344-86E1-4F83-9A85-5D5F3C679A68}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Narumikazuchi", "submodules\Common\Narumikazuchi\Narumikazuchi.csproj", "{DE1C46D7-4DE6-4B11-9C0D-E95B69C16548}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,16 +21,9 @@ Global
 		{F760D5BB-36B3-4A5E-9489-203961F55B38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F760D5BB-36B3-4A5E-9489-203961F55B38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F760D5BB-36B3-4A5E-9489-203961F55B38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE1C46D7-4DE6-4B11-9C0D-E95B69C16548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE1C46D7-4DE6-4B11-9C0D-E95B69C16548}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE1C46D7-4DE6-4B11-9C0D-E95B69C16548}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE1C46D7-4DE6-4B11-9C0D-E95B69C16548}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DE1C46D7-4DE6-4B11-9C0D-E95B69C16548} = {3CC5D344-86E1-4F83-9A85-5D5F3C679A68}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91873886-CC62-4765-AE8C-54626A32D940}

@@ -9,9 +9,11 @@ public sealed class DataReceivedEventArgs<TData> : EventArgs
     /// Initializes a new instance of the <see cref="DataReceivedEventArgs{TData}"/> class.
     /// </summary>
     /// <exception cref="ArgumentNullException"/>
-    public DataReceivedEventArgs([DisallowNull] TData data!!,
+    public DataReceivedEventArgs([DisallowNull] TData data,
                                  in Guid fromClient)
     {
+        ArgumentNullException.ThrowIfNull(data);
+
         this.Data = data;
         this.FromClient = fromClient;
     }
@@ -22,6 +24,8 @@ public sealed class DataReceivedEventArgs<TData> : EventArgs
     /// <exception cref="ArgumentNullException"/>
     public DataReceivedEventArgs([DisallowNull] TData data!!)
     {
+        ArgumentNullException.ThrowIfNull(data);
+
         this.Data = data;
         this.FromClient = null;
     }

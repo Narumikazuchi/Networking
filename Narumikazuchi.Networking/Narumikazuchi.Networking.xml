@@ -37,11 +37,10 @@
             Contains the connected or disconnected client.
             </summary>
         </member>
-        <member name="M:Narumikazuchi.Networking.ConnectionEventArgs.#ctor(System.Guid,Narumikazuchi.Networking.ConnectionType@)">
+        <member name="M:Narumikazuchi.Networking.ConnectionEventArgs.#ctor(System.Guid@,Narumikazuchi.Networking.ConnectionType@)">
             <summary>
             Initializes a new instance of the <see cref="T:Narumikazuchi.Networking.ConnectionEventArgs"/> class.
             </summary>
-            <exception cref="T:System.ArgumentNullException"/>
         </member>
         <member name="P:Narumikazuchi.Networking.ConnectionEventArgs.Client">
             <summary>
